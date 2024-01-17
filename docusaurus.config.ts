@@ -4,7 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "Ken Docs",
-  tagline: "Dinosaurs are cool",
+  tagline: "Enjoy your code!",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
