@@ -2,6 +2,8 @@
 
 ### Yarn version 1.22.21
 
+### Emojis refer at https://mojee.io/emojis/
+
 ### Translation
 
 # Translate JSON files
@@ -19,10 +21,12 @@
 - `cp -r blog/** i18n/it/docusaurus-plugin-content-blog`
 
 ### Git
+
 - Process
 - Useful command
 
 ### Training
+
 - Project
   - Booking fashion
     - Figma
@@ -32,6 +36,7 @@
     - Document
 
 ### Angular
+
 - Angular
   - Core
   - Tips and Tricks
@@ -73,23 +78,29 @@
       - ...
 
 ### React
+
 - React
- - v18
-    - Core
-    - Hooks
-    - Components
+- v18
+
+  - Core
+  - Hooks
+  - Components
 
 - React Hook Form
 - React Router Dom
 - React Translation
 
 ### NextJS
+
 - Next page router
 - Next app router
 
 ### Redux - Redux toolkit
+
 ### SWR
+
 ### Tanstack Query
 
 ### Ant Design
+
 ### Material UI
