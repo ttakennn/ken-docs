@@ -1,0 +1,92 @@
+---
+description: Installation
+id: angular-installation
+title: Installation
+slug: /angular-installation
+sidebar_position: 1
+tags: [Angular, Installation]
+keywords:
+  - docs
+  - docusaurus
+last_update:
+  date: 1/19/2024
+  author: Ken
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+## Prerequisites
+
+:arrow_forward: To use Angular framework, you need to have knowledge as below:
+
+- [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Language_overview)
+- [HTML](https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML)
+- [CSS](https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps)
+
+## Setup environment
+
+**1. Install [NodeJS](https://nodejs.org/en)**
+
+- Run `node -v` to check version of NodeJs
+- Run `npm -v` to check version of NPM
+
+**2. Install CLI globally**
+
+:diamond_shape_with_a_dot_inside: This command installs the latest version of Angular CLI globally on your system.
+
+<Tabs>
+  <TabItem value="npm" label="Using NPM" default>
+    ```bash 
+    npm install -g @angular/cli@latest
+    ```
+  </TabItem>
+  <TabItem value="yarn" label="Using Yarn">
+  ```bash
+    yarn global add @angular/cli@latest
+  ```
+  </TabItem>
+  <TabItem value="specific-version" label="Install Specific Version">
+  ```bash
+    npm install -g @angular/cli@wished.version.here
+  ```
+  </TabItem>
+</Tabs>
+
+
+:diamond_shape_with_a_dot_inside: After the installation is complete, you can verify that the update was successful by checking the Angular CLI version:
+
+```bash
+ng --version
+```
+
+## Start a New Project
+:arrow_right: Create a project with name as `my-app`
+```bash
+ng new my-app
+```
+:arrow_right: Navigate to your folder `my-app`
+
+:arrow_right: Run the following command:
+```bash
+cd my-app
+ng serve --open
+```
+
+:small_orange_diamond: The --open option automatically opens your browser to http://localhost:4200/.
+
+:small_orange_diamond: You will see the Dashboard similar to the following.
+
+![Angular 17 Dashboard](/img/screen-angular-setup.png "Angular 17 - Dashboard")
+
+:sparkles: Angular version 17.1.0.
+
+:sparkles: Node version 20.10.0.
+
+-----
+
+:eight_pointed_black_star: Link reference
+
+:point_right: https://angular.io/docs
+
+:point_right: https://angular.dev

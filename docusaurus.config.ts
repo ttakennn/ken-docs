@@ -48,6 +48,8 @@ const config: Config = {
         docs: {
           sidebarPath: "./sidebars.ts",
           sidebarCollapsed: true,
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
         },
         blog: {
           showReadingTime: true,
