@@ -145,18 +145,18 @@ const config: Config = {
     },
     algolia: {
       // The application ID provided by Algolia
-      appId: 'BT0RMF8H0Z',
+      appId: "PWJE2PU2ZR",
 
       // Public API key: it is safe to commit it
-      apiKey: 'ed2273f20731f69e84fc45f16e318feb',
+      apiKey: "cbae34ef7712d167d7c550d8098eaf3e",
 
-      indexName: 'ttaken_docs',
+      indexName: "ken-vercel",
 
       // Optional: see doc section below
       contextualSearch: true,
 
       // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
-      externalUrlRegex: 'github\\.com|course\\.ken-docs\\.vercel.app',
+      // externalUrlRegex: "github\\.com|course\\.ken-docs\\.vercel.app",
 
       // Optional: Replace parts of the item URLs from Algolia. Useful when using the same search index for multiple deployments using a different baseUrl. You can use regexp or string in the `from` param. For example: localhost:3000 vs myCompany.com/docs
       // replaceSearchResultPathname: {
