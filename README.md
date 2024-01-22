@@ -20,6 +20,11 @@
 - `mkdir -p i18n/it/docusaurus-plugin-content-blog`
 - `cp -r blog/** i18n/it/docusaurus-plugin-content-blog`
 
+### Versioning
+
+# Create docusaurus version 1.0.0
+- `yarn run docusaurus docs:version 1.0.0`
+
 ### Git
 
 - Process
