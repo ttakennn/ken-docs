@@ -1,0 +1,19 @@
+<app-main-layout>
+  <ng-container title> Signals </ng-container>
+  <ng-container container>
+    <mat-tab-group>
+      <mat-tab label="Example">
+        <h2>Counter: {{ count() }}</h2>
+        <h2>DoubleCount: {{ doubleCount() }}</h2>
+        <button mat-raised-button color="primary" (click)="updateCount()">
+          Click
+        </button>
+      </mat-tab>
+      //highlight-start
+      <mat-tab label="User Profile">
+        <app-user-profile />
+      </mat-tab>
+      //highlight-end
+    </mat-tab-group>
+  </ng-container>
+</app-main>

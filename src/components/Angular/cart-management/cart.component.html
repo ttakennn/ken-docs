@@ -1,0 +1,10 @@
+<ng-container *ngFor="let cart of cartSignal.items">
+  <div>ID Product: {{ cart.productId }}</div>
+  <div>Product Name: {{ cart.productName }}</div>
+  <div>Price: {{ cart.price }}</div>
+  <div>quantity: {{ cart.quantity }}</div>
+  <button mat-raised-button color="warn" (click)="removeCart(cart.productId)">Remove</button>
+  <hr />
+</ng-container>
+<div>Total: {{ cartSignal.totalAmount }}</div>
+<button mat-raised-button color="primary" (click)="addToCart()">Add Cart</button>

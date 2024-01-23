@@ -46,7 +46,7 @@ const config: Config = {
       "classic",
       {
         docs: {
-          path: 'docs',
+          path: "docs",
           breadcrumbs: true,
           sidebarPath: "./sidebars.ts",
           sidebarCollapsed: true,
@@ -99,7 +99,7 @@ const config: Config = {
           position: "right",
         },
         {
-          type: 'docsVersionDropdown',
+          type: "docsVersionDropdown",
           position: "right",
         },
         // { // @TODO: support  translation
