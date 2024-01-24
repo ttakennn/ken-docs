@@ -3,6 +3,6 @@
   "position": 3,
   "link": {
     "type": "generated-index",
-    "description": "Using GIT in your project."
+    "description": "Angular, developed by Google, stands as a powerful framework for building dynamic and robust web applications. At its core, Angular employs a component-based architecture, encouraging the creation of modular, reusable building blocks. The heart of Angular lies in its ability to seamlessly handle data binding, dependency injection, and provide a structured environment for scalable development."
   }
 }

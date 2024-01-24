@@ -3,7 +3,7 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
-  title: "Ken Docs",
+  title: "Ken Handbook",
   tagline: "Enjoy your code!",
   favicon: "img/favicon.ico",
 
@@ -81,7 +81,7 @@ const config: Config = {
       },
     },
     navbar: {
-      title: "Ken Docs",
+      title: "Ken Handbook",
       logo: {
         alt: "ken-docs-logo",
         src: "img/logo.png",

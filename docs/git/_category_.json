@@ -3,6 +3,6 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "Using GIT in your project."
+    "description": "At its core, Git is a distributed version control system designed to track changes in source code during software development. It facilitates collaboration among multiple developers and enables the management of project versions seamlessly."
   }
 }
