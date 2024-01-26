@@ -13,17 +13,16 @@ last_update:
   author: Admin
 ---
 
+import Highlight from "@site/src/components/highlight/highlight.js";
 import CodeBlock from "@theme/CodeBlock";
 import SignalsFeature from "!!raw-loader!@site/src/components/Angular/signals-feature.component.ts";
-import SignalsFeatureHTML from "!!raw-loader!@site/src/components/Angular/signals-feature.component.html";
+import TodoListFeature from "!!raw-loader!@site/src/components/Angular/todo-list/todo-list.component.ts";
 
 import UserProfileService from "!!raw-loader!@site/src/components/Angular/user-profile/profile-service.tsx";
 import SignalsUserProfile from "!!raw-loader!@site/src/components/Angular/user-profile/user-profile.component.tsx";
-import SignalsUserProfileHTML from "!!raw-loader!@site/src/components/Angular/user-profile/user-profile.component.html";
 
 import CartService from "!!raw-loader!@site/src/components/Angular/cart-management/cart.service.ts";
 import SignalCart from "!!raw-loader!@site/src/components/Angular/cart-management/cart.component.ts";
-import SignalCartHTML from "!!raw-loader!@site/src/components/Angular/cart-management/cart.component.html";
 
 import BookingComponent from "!!raw-loader!@site/src/components/Angular/booking/listing-page/booking.component.ts";
 import BookingListComponent from "!!raw-loader!@site/src/components/Angular/booking/listing-page/bookinglist.component.ts";
@@ -44,6 +43,7 @@ import BookinglistInterface from "!!raw-loader!@site/src/components/Angular/book
 import BookinglistItemInterface from "!!raw-loader!@site/src/components/Angular/booking/shared/interfaces/bookinglist-item.ts";
 
 import Packagejson from "!!raw-loader!@site/src/components/Angular/package.json";
+import StructureProject from "!!raw-loader!@site/src/components/Angular/structure-project.bash";
 
 :::info
 The current document is being updated to Angular 17.
@@ -140,15 +140,67 @@ When you create an effect, **it is automatically destroyed when its enclosing co
 
 `Effects` return an `EffectRef` that you can use to destroy them manually, by calling the `.destroy()` method. You can combine this with the `manualCleanup` option to create an effect that lasts until it is manually destroyed. Be careful to actually clean up such effects when they're no longer required.
 
-### Version
+### Untracked
 
-:::warning List versions
+Angular provided untracked function which allows you to execute any function in a non-reactive context and sometimes it will return values.
 
-- Angular: **v17.1.0**
-- Node: **v20.10.0**
-- Yarn: **v1.22.21**
+Please see the example as below:
 
-:::
+```ts
+export class AppComponent {
+  count = signal(1);
+  user = signal(0);
+  nCount = untracked(this.count);
+  factor = untracked(() => {
+    const count = this.count();
+    const users = this.users() || 5;
+
+    return count / users;
+  });
+
+  revenue = computed(() => untracked(() => this.count() * 5));
+
+  constructor() {
+    // This effect method will be called only once since no signal property is used in its context.
+    effect(() => {
+      console.log("Empty effect method");
+    });
+
+    // The below effect will be called whenever the user signal is changed.
+    effect(() => {
+      console.log("User effect invoked " + this.user());
+    });
+
+    // This callback will be invoked when either the user or count signal is changed.
+    effect(() => {
+      console.log(
+        "User and View effect invoked " + this.user() + " " + this.count()
+      );
+    });
+
+    // This effect method will be called when the very first time the count signal is set then it will become inert since the count is wrapped in the untracked method. This method will help you execute the signals inside a non-reactive context.
+    effect(() => {
+      console.log("Count effect invoked " + untracked(this.count));
+    });
+  }
+
+  addCount() {
+    this.count.update((val) => val + 1);
+  }
+
+  userChange() {
+    this.user.update((val) => val + 1);
+  }
+
+  resetCount() {
+    this.count.set(0);
+  }
+}
+```
+
+In the above code, <Highlight color="#4794c7">nCount</Highlight> simply unwrap the signal value and <Highlight color="#4794c7">factor</Highlight> will hold the result of the arbitrary function run inside the untracked function.
+
+The <Highlight color="#4794c7">revenue</Highlight> computed signal will be computed only once(value would be 5) based on its dependency count. For subsequent set operations, revenue will not recalculate and will remain in the same value.
 
 <details>
   <summary>package.json</summary>
@@ -157,65 +209,52 @@ When you create an effect, **it is automatically destroyed when its enclosing co
   </CodeBlock>
 </details>
 
-### Example 1: Counter :memo:
+## Examples: :memo:
 
-<CodeBlock language="tsx" title="signals-feature.component.ts">
+:::warning Version
+
+- Angular: **v17.1.0**
+- Node: **v20.10.0**
+- Yarn: **v1.22.21**
+
+:::
+
+**The structure of a project look like as below:**
+
+<CodeBlock language="bash">{StructureProject}</CodeBlock>
+
+<h4 id="signals-feature">You can see the code for Signals feature as below:</h4>
+
+<CodeBlock
+  language="tsx"
+  title="signals-feature.component.ts"
+  showLineNumbers="true"
+>
   {SignalsFeature}
 </CodeBlock>
 
-<CodeBlock language="html" title="signals-feature.component.html">
-  {SignalsFeatureHTML}
-</CodeBlock>
+### Todo List :reminder_ribbon:
+
+Create a new **Todo List** component and then add it to [**signals-feature.component.ts**](#signals-feature)
+
+<details>
+  <summary>todo-list.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {TodoListFeature}
+  </CodeBlock>
+</details>
 
 **Result**
 
-![Result](/img/angular/signals_counter.png "Angular 17 - Signals Counter")
+![Result](/img/angular/signals-todo-list.png "Angular 17 - Signals Todo List")
 
-### Example 2: User Profile :memo:
+### User Profile :reminder_ribbon:
 
-Create a new **User Profile** component and then add it to **signals-user-profile.component.html**
-
-```html title="signals-user-profile.component.html" {12-14}
-<app-main-layout>
-  <ng-container title> Signals </ng-container>
-  <ng-container container>
-    <mat-tab-group>
-      <mat-tab label="Example">
-        <h2>Counter: {{ count() }}</h2>
-        <h2>DoubleCount: {{ doubleCount() }}</h2>
-        <button mat-raised-button color="primary" (click)="updateCount()">
-          Click
-        </button>
-      </mat-tab>
-      <mat-tab label="User Profile">
-        <app-user-profile />
-      </mat-tab>
-    </mat-tab-group>
-  </ng-container>
-</app-main>
-```
-
-```ts title="signals-feature.component.ts"
-...
-@Component({
-  selector: "app-signals-feature",
-  standalone: true,
-  imports: [
-    CommonModule,
-    MainLayoutComponent,
-    MatButtonModule,
-    MatTabsModule,
-    //highlight-next-line
-    UserProfileComponent,
-  ],
-  templateUrl: "./signals-feature.component.html",
-})
-...
-```
+Create a new **User Profile** component and then add it to [**signals-feature.component.ts**](#signals-feature)
 
 In this example, we will use Signal in the service.
 
-<CodeBlock language="tsx" title="profile-service.service.ts">
+<CodeBlock language="tsx" title="profile.service.ts">
   {UserProfileService}
 </CodeBlock>
 
@@ -223,179 +262,38 @@ In this example, we will use Signal in the service.
   {SignalsUserProfile}
 </CodeBlock>
 
-<CodeBlock language="html" title="user-profile.component.html">
-  {SignalsUserProfileHTML}
-</CodeBlock>
-
 **Result**
 
 ![Result](/img/angular/signals_user_profile.png "Angular 17 - Signals User Profile")
 
-### Example 3: Cart Manager :memo:
+### Cart Manager :reminder_ribbon:
 
-In this example, we will learn about **Cart management** so that could add/delete the cart.
+In this example, we will handle about **Cart** function so that could add/delete the cart.
 
-Create a new **Cart management** component and then add it to **signals-user-profile.component.html**
+Create a new **Cart** component and then add it to [**signals-feature.component.ts**](#signals-feature)
 
-```html title="signals-user-profile.component.html" {15-17}
-<app-main-layout>
-  <ng-container title> Signals </ng-container>
-  <ng-container container>
-    <mat-tab-group>
-      <mat-tab label="Example">
-        <h2>Counter: {{ count() }}</h2>
-        <h2>DoubleCount: {{ doubleCount() }}</h2>
-        <button mat-raised-button color="primary" (click)="updateCount()">
-          Click
-        </button>
-      </mat-tab>
-      <mat-tab label="User Profile">
-        <app-user-profile />
-      </mat-tab>
-      <mat-tab label="Cart Manager">
-        <app-cart />
-      </mat-tab>
-    </mat-tab-group>
-  </ng-container>
-</app-main>
-```
-
-```ts title="signals-feature.component.ts"
-...
-@Component({
-  selector: "app-signals-feature",
-  standalone: true,
-  imports: [
-    CommonModule,
-    MainLayoutComponent,
-    MatButtonModule,
-    MatTabsModule,
-    UserProfileComponent,
-    //highlight-next-line
-    CartComponent,
-  ],
-  templateUrl: "./signals-feature.component.html",
-})
-...
-```
-
-<CodeBlock language="tsx" title="cart.service.ts">
-  {CartService}
-</CodeBlock>
-
-<CodeBlock language="tsx" title="cart.component.ts">
+<CodeBlock language="tsx" title="cart.component.ts" showLineNumbers="true">
   {SignalCart}
 </CodeBlock>
 
-<CodeBlock language="html" title="cart.component.html">
-  {SignalCartHTML}
+<CodeBlock language="tsx" title="cart.service.ts" showLineNumbers="true">
+  {CartService}
 </CodeBlock>
 
 **Result**
 
 ![Result](/img/angular/signals_cart_management.png "Angular 17 - Signals Cart Management")
 
-## Example 4: Booking :memo:
+### Booking :reminder_ribbon:
 
 In this example, we will manage state in Signals. See the result below:
 
-### Booking list dashboard
+### :small_blue_diamond: Booking list dashboard
 
 ![Result](/img/angular/booking-list.png "Angular 17 - Signals State - Booking List Dashboard")
 
-The structure of a project look like as below:
-
-```
-src
-  |
-  app
-  │
-  └───shared
-  │   │
-  │   └───components
-  │       │   form-modal.component.ts
-  │       │   modal.component.ts
-  |       |
-  |       interfaces
-  │       │   bookinglist-item.ts
-  |       |   bookinglist.ts
-  |       |
-  |       services
-  |       |   booking-list.service.ts
-  |       |   storage.service.ts
-  │
-  |---signals-feature
-  |   |
-  |   |---booking
-  |      |
-  |      |---ui
-  |      |   booking-list.component.ts
-  |      |
-  |      | booking.component.ts
-  |      |
-  |   |---booking-detail
-  |      |
-  |      |---ui
-  |      |   booking-detail-header.component.ts
-  |      |   booking-detail-listing.component.ts
-  |      |
-  |      | booking-detail.component.ts
-  |      | booking-detail.service.ts
-  |
-  |   signals-feature.component.html
-  |   signals-feature.component.ts
-
-  app.routes.ts
-```
-
 Create a new **Booking** component to manage list books and then using Angular Material to style the UI/UX.
-After that add it to **signals-user-profile.component.html**
-
-```html title="signals-user-profile.component.html" {18-20}
-<app-main-layout>
-  <ng-container title> Signals </ng-container>
-  <ng-container container>
-    <mat-tab-group>
-      <mat-tab label="Example">
-        <h2>Counter: {{ count() }}</h2>
-        <h2>DoubleCount: {{ doubleCount() }}</h2>
-        <button mat-raised-button color="primary" (click)="updateCount()">
-          Click
-        </button>
-      </mat-tab>
-      <mat-tab label="User Profile">
-        <app-user-profile />
-      </mat-tab>
-      <mat-tab label="Cart Manager">
-        <app-cart />
-      </mat-tab>
-      <mat-tab label="Booking">
-        <app-booking />
-      </mat-tab>
-    </mat-tab-group>
-  </ng-container>
-</app-main>
-```
-
-```ts title="signals-feature.component.ts"
-...
-@Component({
-  selector: "app-signals-feature",
-  standalone: true,
-  imports: [
-    CommonModule,
-    MainLayoutComponent,
-    MatButtonModule,
-    MatTabsModule,
-    UserProfileComponent,
-    CartComponent,
-    //highlight-next-line
-    BookingComponent,
-  ],
-  templateUrl: "./signals-feature.component.html",
-})
-...
-```
+After that add it to [**signals-feature.component.ts**](#signals-feature)
 
 Create interfaces for Booking list.
 
@@ -457,7 +355,7 @@ Create a storage service to store data in web Browser.
   </CodeBlock>
 </details>
 
-### Booking list details page
+### :small_blue_diamond: Booking list details page
 
 We will handle the Booking Details page when you clicks the line item in table. See the result below:
 
@@ -525,3 +423,5 @@ Handle `toggle`, `edit`, `delete` booking item.
 :point_right: https://hackernoon.com/a-guide-to-angular-signals-with-practical-use-cases-part-2
 
 :point_right: https://github.com/joshuamorony/angularstart-quicklists/
+
+:point_right: https://maddydeep28.medium.com/angular-signals-new-change-detection-strategy-44f7ee9c359a

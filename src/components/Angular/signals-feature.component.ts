@@ -1,19 +1,12 @@
 import { CommonModule } from "@angular/common";
-import {
-  Component,
-  Injector,
-  Signal,
-  WritableSignal,
-  computed,
-  effect,
-  signal,
-} from "@angular/core";
+import { Component, Injector, effect } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MainLayoutComponent } from "../main-layout/main-layout.component";
-import { UserProfileComponent } from "./user-profile/user-profile.component";
-import { CartComponent } from "./cart/cart.component";
 import { BookingComponent } from "./booking/booking.component";
+import { CartComponent } from "./cart/cart.component";
+import { TodoListComponent } from "./todo-list/todo-list.component";
+import { UserProfileComponent } from "./user-profile/user-profile.component";
 
 @Component({
   selector: "app-signals-feature",
@@ -23,16 +16,34 @@ import { BookingComponent } from "./booking/booking.component";
     MainLayoutComponent,
     MatButtonModule,
     MatTabsModule,
-    UserProfileComponent, // example 2
-    CartComponent, // example 3
-    BookingComponent, // example 4
+    TodoListComponent,
+    UserProfileComponent,
+    CartComponent,
+    BookingComponent,
   ],
-  templateUrl: "./signals-feature.component.html",
+  template: `
+    <app-main-layout>
+      <ng-container title> Signals </ng-container>
+      <ng-container container>
+        <mat-tab-group>
+          <mat-tab label="Todo List">
+            <app-todo-list />
+          </mat-tab>
+          <mat-tab label="User Profile">
+            <app-user-profile />
+          </mat-tab>
+          <mat-tab label="Cart Manager">
+            <app-cart />
+          </mat-tab>
+          <mat-tab label="Booking">
+            <app-booking />
+          </mat-tab>
+        </mat-tab-group>
+      </ng-container>
+    </app-main-layout>
+  `,
 })
 export class SignalsFeatureComponent {
-  count: WritableSignal<number> = signal(0);
-  doubleCount: Signal<number> = computed(() => this.count() * 2); // read only
-
   constructor(private injector: Injector) {
     this.initializeLogging();
   }
@@ -40,13 +51,9 @@ export class SignalsFeatureComponent {
   initializeLogging() {
     effect(
       () => {
-        console.log(`The Double Count is: ${this.doubleCount()})`);
+        console.log(`Effect run`);
       },
       { injector: this.injector }
     );
-  }
-
-  updateCount() {
-    this.count.update((value) => value + 1);
   }
 }

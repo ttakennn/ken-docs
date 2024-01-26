@@ -3,13 +3,24 @@ import { Component, inject } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MainLayoutComponent } from "../../main-layout/main-layout.component";
-import { ProfileService } from "./profile-service.service";
+import { ProfileService } from "./profile.service";
 
 @Component({
   selector: "app-user-profile",
   standalone: true,
   imports: [CommonModule, MainLayoutComponent, MatButtonModule, MatTabsModule],
-  templateUrl: "./user-profile.component.html",
+  template: `
+    <ng-container *ngFor="let profile of userProfile()">
+      <p>Name: {{ profile.name }}</p>
+      <p>Age: {{ profile.age }}</p>
+    </ng-container>
+    <button mat-raised-button color="warn" (click)="updateProfile()">
+      Update Profile
+    </button>
+    <button mat-raised-button color="warn" (click)="setProfile()">
+      Set Profile
+    </button>
+  `,
 })
 export class UserProfileComponent {
   profileService = inject(ProfileService);
