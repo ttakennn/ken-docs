@@ -23,9 +23,9 @@ import { BookingComponent } from "./booking/booking.component";
     MainLayoutComponent,
     MatButtonModule,
     MatTabsModule,
-    UserProfileComponent,
-    CartComponent,
-    BookingComponent,
+    UserProfileComponent, // example 2
+    CartComponent, // example 3
+    BookingComponent, // example 4
   ],
   templateUrl: "./signals-feature.component.html",
 })
