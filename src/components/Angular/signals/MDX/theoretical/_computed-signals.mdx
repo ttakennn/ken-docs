@@ -1,0 +1,8 @@
+```js
+  count: WritableSignal<number> = signal(0);
+  doubleCount: Signal<number> = computed(() => this.count() * 2); // read only
+```
+
+Computed signal are `read-only`. The `doubleCount` will not use `set()` or `update()`.
+
+The `doubleCount` signal depends on the `count` signal. Whenever `count` updates, Angular knows that `doubleCount` needs to update as well.

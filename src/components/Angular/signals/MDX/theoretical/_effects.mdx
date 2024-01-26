@@ -1,0 +1,45 @@
+An `Effect` is an operation that runs whenever one or more signal values change.
+
+`Effects` always run **at least once**.
+
+`Effects` always execute **asynchronously**, during the change detection process.
+
+```js
+  @Component({...})
+  export class EffectiveCounterComponent {
+    readonly count = signal(0);
+    constructor() {
+      // Register a new effect.
+      effect(() => {
+        console.log(`The count is: ${this.count()})`);
+      });
+    }
+  }
+```
+
+Alternatively, you can assign the effect to a field.
+
+```js
+  @Component({...})
+  export class EffectiveCounterComponent {
+    readonly count = signal(0);
+    private loggingEffect = effect(() => {
+      console.log(`The count is: ${this.count()})`);
+    });
+  }
+```
+
+To create an `Effect` outside of the constructor.
+
+```js
+  @Component({...})
+  export class EffectiveCounterComponent {
+    readonly count = signal(0);
+    constructor(private injector: Injector) {}
+    initializeLogging(): void {
+      effect(() => {
+        console.log(`The count is: ${this.count()})`);
+      }, {injector: this.injector});
+    }
+  }
+```

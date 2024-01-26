@@ -1,0 +1,19 @@
+import CodeBlock from "@theme/CodeBlock";
+import UserProfileService from "!!raw-loader!@site/src/components/Angular/signals/user-profile/profile-service.tsx";
+import SignalsUserProfile from "!!raw-loader!@site/src/components/Angular/signals/user-profile/user-profile.component.tsx";
+
+Create a new **User Profile** component and then add it to [**signals-feature.component.ts**](#signals-feature)
+
+In this example, we will use Signal in the service.
+
+<CodeBlock language="tsx" title="profile.service.ts">
+  {UserProfileService}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="user-profile.component.ts">
+  {SignalsUserProfile}
+</CodeBlock>
+
+**Result**
+
+![Result](/img/angular/signals_user_profile.png "Angular 17 - Signals User Profile")

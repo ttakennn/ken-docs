@@ -1,0 +1,19 @@
+import CodeBlock from "@theme/CodeBlock";
+import CartService from "!!raw-loader!@site/src/components/Angular/signals/cart-management/cart.service.ts";
+import SignalCart from "!!raw-loader!@site/src/components/Angular/signals/cart-management/cart.component.ts";
+
+In this example, we will handle about **Cart** function so that could add/delete the cart.
+
+Create a new **Cart** component and then add it to [**signals-feature.component.ts**](#signals-feature)
+
+<CodeBlock language="tsx" title="cart.component.ts" showLineNumbers="true">
+  {SignalCart}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="cart.service.ts" showLineNumbers="true">
+  {CartService}
+</CodeBlock>
+
+**Result**
+
+![Result](/img/angular/signals_cart_management.png "Angular 17 - Signals Cart Management")

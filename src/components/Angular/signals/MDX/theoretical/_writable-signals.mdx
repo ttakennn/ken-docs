@@ -1,0 +1,15 @@
+```js title="Create a signal"
+count: WritableSignal<number> = signal(0);
+```
+
+To change the value of a writable signal, use the `.set()`:
+
+```js
+count.set(3);
+```
+
+or use the `.update()` to add a new value from the previous one:
+
+```js
+count.update((value) => value + 1);
+```

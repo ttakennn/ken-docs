@@ -13,276 +13,60 @@ last_update:
   author: Admin
 ---
 
-import Highlight from "@site/src/components/highlight/highlight.js";
-import CodeBlock from "@theme/CodeBlock";
-import SignalsFeature from "!!raw-loader!@site/src/components/Angular/signals-feature.component.ts";
-import TodoListFeature from "!!raw-loader!@site/src/components/Angular/todo-list/todo-list.component.ts";
+import WhatAreSignals from '@site/src/components/Angular/signals/MDX/theoretical/_what-are-signals.mdx'
+import WritableSignal from '@site/src/components/Angular/signals/MDX/theoretical/_writable-signals.mdx'
+import ComputedSignal from '@site/src/components/Angular/signals/MDX/theoretical/_computed-signals.mdx'
+import Effects from '@site/src/components/Angular/signals/MDX/theoretical/_effects.mdx'
+import DestroyingEffects from '@site/src/components/Angular/signals/MDX/theoretical/_destroying-effects.mdx'
+import Untracked from '@site/src/components/Angular/signals/MDX/theoretical/_untracked.mdx'
 
-import UserProfileService from "!!raw-loader!@site/src/components/Angular/user-profile/profile-service.tsx";
-import SignalsUserProfile from "!!raw-loader!@site/src/components/Angular/user-profile/user-profile.component.tsx";
+import SetupSignalsProject from '@site/src/components/Angular/signals/MDX/examples/setup-project/_setup-project.mdx'
 
-import CartService from "!!raw-loader!@site/src/components/Angular/cart-management/cart.service.ts";
-import SignalCart from "!!raw-loader!@site/src/components/Angular/cart-management/cart.component.ts";
+import TodoListFeature from '@site/src/components/Angular/signals/MDX/examples/todo-list/_todo-list.mdx'
+import UserProfileFeature from '@site/src/components/Angular/signals/MDX/examples/user-profile/_user-profile.mdx'
+import CartFeature from '@site/src/components/Angular/signals/MDX/examples/cart/_cart.mdx'
 
-import BookingComponent from "!!raw-loader!@site/src/components/Angular/booking/listing-page/booking.component.ts";
-import BookingListComponent from "!!raw-loader!@site/src/components/Angular/booking/listing-page/bookinglist.component.ts";
+import BookinglistFeature from '@site/src/components/Angular/signals/MDX/examples/booking/_booking-list.mdx'
+import BookingDetailsFeature from '@site/src/components/Angular/signals/MDX/examples/booking/_booking-details.mdx'
 
-import BookingStorageService from "!!raw-loader!@site/src/components/Angular/booking/shared/services/storage.service.ts";
-import BookingListService from "!!raw-loader!@site/src/components/Angular/booking/shared/services/bookinglist.service.ts";
-import BookingRoutes from "!!raw-loader!@site/src/components/Angular/booking/app.routes.ts";
-
-import BookingDetailHeaderComponent from "!!raw-loader!@site/src/components/Angular/booking/details-page/booking-detail-header.component.ts";
-import BookingDetailListingComponent from "!!raw-loader!@site/src/components/Angular/booking/details-page/booking-detail-listing.component.ts";
-import BookingDetailComponent from "!!raw-loader!@site/src/components/Angular/booking/details-page/booking-detail.component.ts";
-import BookingDetailService from "!!raw-loader!@site/src/components/Angular/booking/details-page/booking-detail.service.ts";
-
-import FormModalComponent from "!!raw-loader!@site/src/components/Angular/booking/shared/components/form-modal.component.ts";
-import ModalComponent from "!!raw-loader!@site/src/components/Angular/booking/shared/components/modal.component.ts";
-
-import BookinglistInterface from "!!raw-loader!@site/src/components/Angular/booking/shared/interfaces/bookinglist.ts";
-import BookinglistItemInterface from "!!raw-loader!@site/src/components/Angular/booking/shared/interfaces/bookinglist-item.ts";
-
-import Packagejson from "!!raw-loader!@site/src/components/Angular/package.json";
-import StructureProject from "!!raw-loader!@site/src/components/Angular/structure-project.bash";
 
 :::info
 The current document is being updated to Angular 17.
 :::
 
 ### What are signals? :globe_with_meridians:
-
-A signal is a wrapper around a value that notifies interested consumers when that value changes. Signals can contain any value, from simple primitives to complex data structures.
-
-You read a signal's value by calling its getter function, which allows Angular to track where the signal is used.
-
-Signals may be either `writable` or `read-only`.
+<WhatAreSignals />
 
 ### Writable signals
-
-```js title="Create a signal"
-  count: WritableSignal<number> = signal(0);
-```
-
-To change the value of a writable signal, use the `.set()`:
-
-```js
-count.set(3);
-```
-
-or use the `.update()` to add a new value from the previous one:
-
-```js
-count.update((value) => value + 1);
-```
+<WritableSignal />
 
 ### Computed signals
-
-```js
-  count: WritableSignal<number> = signal(0);
-  doubleCount: Signal<number> = computed(() => this.count() * 2); // read only
-```
-
-Computed signal are `read-only`. The `doubleCount` will not use `set()` or `update()`.
-
-The `doubleCount` signal depends on the `count` signal. Whenever `count` updates, Angular knows that `doubleCount` needs to update as well.
+<ComputedSignal />
 
 ### Effects
-
-An `Effect` is an operation that runs whenever one or more signal values change.
-
-`Effects` always run **at least once**.
-
-`Effects` always execute **asynchronously**, during the change detection process.
-
-```js
-  @Component({...})
-  export class EffectiveCounterComponent {
-    readonly count = signal(0);
-    constructor() {
-      // Register a new effect.
-      effect(() => {
-        console.log(`The count is: ${this.count()})`);
-      });
-    }
-  }
-```
-
-Alternatively, you can assign the effect to a field.
-
-```js
-  @Component({...})
-  export class EffectiveCounterComponent {
-    readonly count = signal(0);
-    private loggingEffect = effect(() => {
-      console.log(`The count is: ${this.count()})`);
-    });
-  }
-```
-
-To create an `Effect` outside of the constructor.
-
-```js
-  @Component({...})
-  export class EffectiveCounterComponent {
-    readonly count = signal(0);
-    constructor(private injector: Injector) {}
-    initializeLogging(): void {
-      effect(() => {
-        console.log(`The count is: ${this.count()})`);
-      }, {injector: this.injector});
-    }
-  }
-```
+<Effects />
 
 ### Destroying effects
-
-When you create an effect, **it is automatically destroyed when its enclosing context is destroyed**. This means that effects created within components are destroyed when the component is destroyed. The same goes for effects within directives, services, etc.
-
-`Effects` return an `EffectRef` that you can use to destroy them manually, by calling the `.destroy()` method. You can combine this with the `manualCleanup` option to create an effect that lasts until it is manually destroyed. Be careful to actually clean up such effects when they're no longer required.
+<DestroyingEffects />
 
 ### Untracked
-
-Angular provided untracked function which allows you to execute any function in a non-reactive context and sometimes it will return values.
-
-Please see the example as below:
-
-```ts
-export class AppComponent {
-  count = signal(1);
-  user = signal(0);
-  nCount = untracked(this.count);
-  factor = untracked(() => {
-    const count = this.count();
-    const users = this.users() || 5;
-
-    return count / users;
-  });
-
-  revenue = computed(() => untracked(() => this.count() * 5));
-
-  constructor() {
-    // This effect method will be called only once since no signal property is used in its context.
-    effect(() => {
-      console.log("Empty effect method");
-    });
-
-    // The below effect will be called whenever the user signal is changed.
-    effect(() => {
-      console.log("User effect invoked " + this.user());
-    });
-
-    // This callback will be invoked when either the user or count signal is changed.
-    effect(() => {
-      console.log(
-        "User and View effect invoked " + this.user() + " " + this.count()
-      );
-    });
-
-    // This effect method will be called when the very first time the count signal is set then it will become inert since the count is wrapped in the untracked method. This method will help you execute the signals inside a non-reactive context.
-    effect(() => {
-      console.log("Count effect invoked " + untracked(this.count));
-    });
-  }
-
-  addCount() {
-    this.count.update((val) => val + 1);
-  }
-
-  userChange() {
-    this.user.update((val) => val + 1);
-  }
-
-  resetCount() {
-    this.count.set(0);
-  }
-}
-```
-
-In the above code, <Highlight color="#4794c7">nCount</Highlight> simply unwrap the signal value and <Highlight color="#4794c7">factor</Highlight> will hold the result of the arbitrary function run inside the untracked function.
-
-The <Highlight color="#4794c7">revenue</Highlight> computed signal will be computed only once(value would be 5) based on its dependency count. For subsequent set operations, revenue will not recalculate and will remain in the same value.
+<Untracked />
 
 ## Examples: :memo:
 
-:::warning Version
-
-- Angular: **v17.1.0**
-- Node: **v20.10.0**
-- Yarn: **v1.22.21**
-
-:::
-
-<details>
-  <summary>package.json</summary>
-  <CodeBlock language="json" showLineNumbers="true">
-    {Packagejson}
-  </CodeBlock>
-</details>
-
-**The structure of a project look like as below:**
-
-<CodeBlock language="bash">{StructureProject}</CodeBlock>
-
-<h4 id="signals-feature">You can see the code for Signals feature as below:</h4>
-
-<CodeBlock
-  language="tsx"
-  title="signals-feature.component.ts"
-  showLineNumbers="true"
->
-  {SignalsFeature}
-</CodeBlock>
+<SetupSignalsProject />
 
 ### Todo List :reminder_ribbon:
 
-Create a new **Todo List** component and then add it to [**signals-feature.component.ts**](#signals-feature)
-
-<details>
-  <summary>todo-list.component.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {TodoListFeature}
-  </CodeBlock>
-</details>
-
-**Result**
-
-![Result](/img/angular/signals-todo-list.png "Angular 17 - Signals Todo List")
+<TodoListFeature />
 
 ### User Profile :reminder_ribbon:
 
-Create a new **User Profile** component and then add it to [**signals-feature.component.ts**](#signals-feature)
-
-In this example, we will use Signal in the service.
-
-<CodeBlock language="tsx" title="profile.service.ts">
-  {UserProfileService}
-</CodeBlock>
-
-<CodeBlock language="tsx" title="user-profile.component.ts">
-  {SignalsUserProfile}
-</CodeBlock>
-
-**Result**
-
-![Result](/img/angular/signals_user_profile.png "Angular 17 - Signals User Profile")
+<UserProfileFeature />
 
 ### Cart Manager :reminder_ribbon:
 
-In this example, we will handle about **Cart** function so that could add/delete the cart.
-
-Create a new **Cart** component and then add it to [**signals-feature.component.ts**](#signals-feature)
-
-<CodeBlock language="tsx" title="cart.component.ts" showLineNumbers="true">
-  {SignalCart}
-</CodeBlock>
-
-<CodeBlock language="tsx" title="cart.service.ts" showLineNumbers="true">
-  {CartService}
-</CodeBlock>
-
-**Result**
-
-![Result](/img/angular/signals_cart_management.png "Angular 17 - Signals Cart Management")
+<CartFeature />
 
 ### Booking :reminder_ribbon:
 
@@ -290,129 +74,11 @@ In this example, we will manage state in Signals. See the result below:
 
 ### :small_blue_diamond: Booking list dashboard
 
-![Result](/img/angular/booking-list.png "Angular 17 - Signals State - Booking List Dashboard")
-
-Create a new **Booking** component to manage list books and then using Angular Material to style the UI/UX.
-After that add it to [**signals-feature.component.ts**](#signals-feature)
-
-Create interfaces for Booking list.
-
-<CodeBlock language="tsx" title="bookinglist.ts" showLineNumbers="true">
-  {BookinglistInterface}
-</CodeBlock>
-
-<CodeBlock language="tsx" title="bookinglist-item.ts" showLineNumbers="true">
-  {BookinglistItemInterface}
-</CodeBlock>
-
-Create common modal component for Booking list.
-
-<CodeBlock language="tsx" title="modal.component.ts" showLineNumbers="true">
-  {ModalComponent}
-</CodeBlock>
-
-<CodeBlock
-  language="tsx"
-  title="form-modal.component.ts"
-  showLineNumbers="true"
->
-  {FormModalComponent}
-</CodeBlock>
-
-Create a new `app-booking` component.
-
-<details>
-  <summary>booking.component.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {BookingComponent}
-  </CodeBlock>
-</details>
-
-Code for the `app-bookinglist` component.
-
-<details>
-  <summary>booking-list.component.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {BookingListComponent}
-  </CodeBlock>
-</details>
-
-Create a `BookinglistService`, using Signal to manage `state`.
-
-<details>
-  <summary>booking-list.service.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {BookingListService}
-  </CodeBlock>
-</details>
-
-Create a storage service to store data in web Browser.
-
-<details>
-  <summary>storage.service.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {BookingStorageService}
-  </CodeBlock>
-</details>
+<BookinglistFeature />
 
 ### :small_blue_diamond: Booking list details page
 
-We will handle the Booking Details page when you clicks the line item in table. See the result below:
-
-![Result](/img/angular/booking-details-page.png "Angular 17 - Signals State - Booking Details page")
-
-:page_facing_up: Update the `routes` for **Booking Details** page.
-
-Creating a **lazy router** for booking details page
-
-<details>
-  <summary>app.routes.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {BookingRoutes}
-  </CodeBlock>
-</details>
-
-:page_facing_up: Create a `service` for **booking detail** page.
-
-Handle `add`, `edit`, `remove`, `toggle`, `reset` functions for booking details page.
-
-<details>
-  <summary>booking-detail.service.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {BookingDetailService}
-  </CodeBlock>
-</details>
-
-:page_facing_up: Create a **booking details** page.
-
-<details>
-  <summary>booking-detail.component.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {BookingDetailComponent}
-  </CodeBlock>
-</details>
-
-:page_facing_up: Add **booking details header** page.
-
-Handle `addItem`, `reset` booking list item.
-
-<details>
-  <summary>booking-detail-header.component.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {BookingDetailHeaderComponent}
-  </CodeBlock>
-</details>
-
-:page_facing_up: Add **booking details listing** page.
-
-Handle `toggle`, `edit`, `delete` booking item.
-
-<details>
-  <summary>booking-detail-listing.component.ts</summary>
-  <CodeBlock language="tsx" showLineNumbers="true">
-    {BookingDetailListingComponent}
-  </CodeBlock>
-</details>
+<BookingDetailsFeature />
 
 ---
 

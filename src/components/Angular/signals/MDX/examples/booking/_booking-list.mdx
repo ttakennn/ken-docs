@@ -1,0 +1,77 @@
+import CodeBlock from "@theme/CodeBlock";
+import FormModalComponent from "!!raw-loader!@site/src/components/Angular/signals/booking/shared/components/form-modal.component.ts";
+import ModalComponent from "!!raw-loader!@site/src/components/Angular/signals/booking/shared/components/modal.component.ts";
+
+import BookinglistInterface from "!!raw-loader!@site/src/components/Angular/signals/booking/shared/interfaces/bookinglist.ts";
+import BookinglistItemInterface from "!!raw-loader!@site/src/components/Angular/signals/booking/shared/interfaces/bookinglist-item.ts";
+
+import BookingComponent from "!!raw-loader!@site/src/components/Angular/signals/booking/listing-page/booking.component.ts";
+import BookingListComponent from "!!raw-loader!@site/src/components/Angular/signals/booking/listing-page/bookinglist.component.ts";
+
+import BookingStorageService from "!!raw-loader!@site/src/components/Angular/signals/booking/shared/services/storage.service.ts";
+import BookingListService from "!!raw-loader!@site/src/components/Angular/signals/booking/shared/services/bookinglist.service.ts";
+
+![Result](/img/angular/booking-list.png "Angular 17 - Signals State - Booking List Dashboard")
+
+Create a new **Booking** component to manage list books and then using Angular Material to style the UI/UX.
+After that add it to [**signals-feature.component.ts**](#signals-feature)
+
+Create interfaces for Booking list.
+
+<CodeBlock language="tsx" title="bookinglist.ts" showLineNumbers="true">
+  {BookinglistInterface}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="bookinglist-item.ts" showLineNumbers="true">
+  {BookinglistItemInterface}
+</CodeBlock>
+
+Create common modal component for Booking list.
+
+<CodeBlock language="tsx" title="modal.component.ts" showLineNumbers="true">
+  {ModalComponent}
+</CodeBlock>
+
+<CodeBlock
+  language="tsx"
+  title="form-modal.component.ts"
+  showLineNumbers="true"
+>
+  {FormModalComponent}
+</CodeBlock>
+
+Create a new `app-booking` component.
+
+<details>
+  <summary>booking.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingComponent}
+  </CodeBlock>
+</details>
+
+Code for the `app-bookinglist` component.
+
+<details>
+  <summary>booking-list.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingListComponent}
+  </CodeBlock>
+</details>
+
+Create a `BookinglistService`, using Signal to manage `state`.
+
+<details>
+  <summary>booking-list.service.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingListService}
+  </CodeBlock>
+</details>
+
+Create a storage service to store data in web Browser.
+
+<details>
+  <summary>storage.service.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingStorageService}
+  </CodeBlock>
+</details>

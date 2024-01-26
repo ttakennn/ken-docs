@@ -1,0 +1,65 @@
+
+import CodeBlock from "@theme/CodeBlock";
+import BookingRoutes from "!!raw-loader!@site/src/components/Angular/signals/booking/app.routes.ts";
+
+import BookingDetailHeaderComponent from "!!raw-loader!@site/src/components/Angular/signals/booking/details-page/booking-detail-header.component.ts";
+import BookingDetailListingComponent from "!!raw-loader!@site/src/components/Angular/signals/booking/details-page/booking-detail-listing.component.ts";
+import BookingDetailComponent from "!!raw-loader!@site/src/components/Angular/signals/booking/details-page/booking-detail.component.ts";
+import BookingDetailService from "!!raw-loader!@site/src/components/Angular/signals/booking/details-page/booking-detail.service.ts";
+
+We will handle the Booking Details page when you clicks the line item in table. See the result below:
+
+![Result](/img/angular/booking-details-page.png "Angular 17 - Signals State - Booking Details page")
+
+:page_facing_up: Update the `routes` for **Booking Details** page.
+
+Creating a **lazy router** for booking details page
+
+<details>
+  <summary>app.routes.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingRoutes}
+  </CodeBlock>
+</details>
+
+:page_facing_up: Create a `service` for **booking detail** page.
+
+Handle `add`, `edit`, `remove`, `toggle`, `reset` functions for booking details page.
+
+<details>
+  <summary>booking-detail.service.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingDetailService}
+  </CodeBlock>
+</details>
+
+:page_facing_up: Create a **booking details** page.
+
+<details>
+  <summary>booking-detail.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingDetailComponent}
+  </CodeBlock>
+</details>
+
+:page_facing_up: Add **booking details header** page.
+
+Handle `addItem`, `reset` booking list item.
+
+<details>
+  <summary>booking-detail-header.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingDetailHeaderComponent}
+  </CodeBlock>
+</details>
+
+:page_facing_up: Add **booking details listing** page.
+
+Handle `toggle`, `edit`, `delete` booking item.
+
+<details>
+  <summary>booking-detail-listing.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingDetailListingComponent}
+  </CodeBlock>
+</details>

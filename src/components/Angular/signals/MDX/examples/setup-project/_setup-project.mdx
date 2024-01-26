@@ -1,0 +1,33 @@
+import CodeBlock from "@theme/CodeBlock";
+import SignalsFeature from "!!raw-loader!@site/src/components/Angular/signals/signals-feature.component.ts";
+import StructureProject from "!!raw-loader!@site/src/components/Angular/signals/structure-project.bash";
+import Packagejson from "!!raw-loader!@site/src/components/Angular/signals/package.json";
+
+:::warning Version
+
+- Angular: **v17.1.0**
+- Node: **v20.10.0**
+- Yarn: **v1.22.21**
+
+:::
+
+<details>
+  <summary>package.json</summary>
+  <CodeBlock language="json" showLineNumbers="true">
+    {Packagejson}
+  </CodeBlock>
+</details>
+
+**The structure of a project look like as below:**
+
+<CodeBlock language="bash">{StructureProject}</CodeBlock>
+
+<h4 id="signals-feature">You can see the code for Signals feature as below:</h4>
+
+<CodeBlock
+  language="tsx"
+  title="signals-feature.component.ts"
+  showLineNumbers="true"
+>
+  {SignalsFeature}
+</CodeBlock>
