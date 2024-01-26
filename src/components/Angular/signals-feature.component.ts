@@ -13,9 +13,10 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MainLayoutComponent } from "../main-layout/main-layout.component";
 import { UserProfileComponent } from "./user-profile/user-profile.component";
 import { CartComponent } from "./cart/cart.component";
+import { BookingComponent } from "./booking/booking.component";
 
 @Component({
-  selector: "app-signals-counter",
+  selector: "app-signals-feature",
   standalone: true,
   imports: [
     CommonModule,
@@ -24,12 +25,12 @@ import { CartComponent } from "./cart/cart.component";
     MatTabsModule,
     UserProfileComponent,
     CartComponent,
+    BookingComponent,
   ],
   templateUrl: "./signals-feature.component.html",
 })
 export class SignalsFeatureComponent {
   count: WritableSignal<number> = signal(0);
-  //highlight-next-line
   doubleCount: Signal<number> = computed(() => this.count() * 2); // read only
 
   constructor(private injector: Injector) {

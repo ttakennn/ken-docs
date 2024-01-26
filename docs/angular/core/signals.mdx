@@ -14,8 +14,8 @@ last_update:
 ---
 
 import CodeBlock from "@theme/CodeBlock";
-import SignalsCounter from "!!raw-loader!@site/src/components/Angular/counter/signals-counter.component.tsx";
-import SignalsCounterHTML from "!!raw-loader!@site/src/components/Angular/counter/signals-counter.component.html";
+import SignalsFeature from "!!raw-loader!@site/src/components/Angular/signals-feature.component.ts";
+import SignalsFeatureHTML from "!!raw-loader!@site/src/components/Angular/signals-feature.component.html";
 
 import UserProfileService from "!!raw-loader!@site/src/components/Angular/user-profile/profile-service.tsx";
 import SignalsUserProfile from "!!raw-loader!@site/src/components/Angular/user-profile/user-profile.component.tsx";
@@ -24,6 +24,24 @@ import SignalsUserProfileHTML from "!!raw-loader!@site/src/components/Angular/us
 import CartService from "!!raw-loader!@site/src/components/Angular/cart-management/cart.service.ts";
 import SignalCart from "!!raw-loader!@site/src/components/Angular/cart-management/cart.component.ts";
 import SignalCartHTML from "!!raw-loader!@site/src/components/Angular/cart-management/cart.component.html";
+
+import BookingComponent from "!!raw-loader!@site/src/components/Angular/booking/listing-page/booking.component.ts";
+import BookingListComponent from "!!raw-loader!@site/src/components/Angular/booking/listing-page/bookinglist.component.ts";
+
+import BookingStorageService from "!!raw-loader!@site/src/components/Angular/booking/shared/services/storage.service.ts";
+import BookingListService from "!!raw-loader!@site/src/components/Angular/booking/shared/services/bookinglist.service.ts";
+import BookingRoutes from "!!raw-loader!@site/src/components/Angular/booking/app.routes.ts";
+
+import BookingDetailHeaderComponent from "!!raw-loader!@site/src/components/Angular/booking/details-page/booking-detail-header.component.ts";
+import BookingDetailListingComponent from "!!raw-loader!@site/src/components/Angular/booking/details-page/booking-detail-listing.component.ts";
+import BookingDetailComponent from "!!raw-loader!@site/src/components/Angular/booking/details-page/booking-detail.component.ts";
+import BookingDetailService from "!!raw-loader!@site/src/components/Angular/booking/details-page/booking-detail.service.ts";
+
+import FormModalComponent from "!!raw-loader!@site/src/components/Angular/booking/shared/components/form-modal.component.ts";
+import ModalComponent from "!!raw-loader!@site/src/components/Angular/booking/shared/components/modal.component.ts";
+
+import BookinglistInterface from "!!raw-loader!@site/src/components/Angular/booking/shared/interfaces/bookinglist.ts";
+import BookinglistItemInterface from "!!raw-loader!@site/src/components/Angular/booking/shared/interfaces/bookinglist-item.ts";
 
 :::info
 The current document is being updated to Angular 17.
@@ -122,12 +140,12 @@ When you create an effect, **it is automatically destroyed when its enclosing co
 
 ### Example 1: Counter :memo:
 
-<CodeBlock language="tsx" title="signals-counter.component.ts">
-  {SignalsCounter}
+<CodeBlock language="tsx" title="signals-feature.component.ts">
+  {SignalsFeature}
 </CodeBlock>
 
-<CodeBlock language="html" title="signals-counter.component.html">
-  {SignalsCounterHTML}
+<CodeBlock language="html" title="signals-feature.component.html">
+  {SignalsFeatureHTML}
 </CodeBlock>
 
 **Result**
@@ -156,6 +174,24 @@ Create a new **User Profile** component and then add it to **signals-user-profil
     </mat-tab-group>
   </ng-container>
 </app-main>
+```
+
+```ts title="signals-feature.component.ts"
+...
+@Component({
+  selector: "app-signals-feature",
+  standalone: true,
+  imports: [
+    CommonModule,
+    MainLayoutComponent,
+    MatButtonModule,
+    MatTabsModule,
+    //highlight-next-line
+    UserProfileComponent,
+  ],
+  templateUrl: "./signals-feature.component.html",
+})
+...
 ```
 
 In this example, we will use Signal in the service.
@@ -205,6 +241,25 @@ Create a new **Cart management** component and then add it to **signals-user-pro
 </app-main>
 ```
 
+```ts title="signals-feature.component.ts"
+...
+@Component({
+  selector: "app-signals-feature",
+  standalone: true,
+  imports: [
+    CommonModule,
+    MainLayoutComponent,
+    MatButtonModule,
+    MatTabsModule,
+    UserProfileComponent,
+    //highlight-next-line
+    CartComponent,
+  ],
+  templateUrl: "./signals-feature.component.html",
+})
+...
+```
+
 <CodeBlock language="tsx" title="cart.service.ts">
   {CartService}
 </CodeBlock>
@@ -221,6 +276,227 @@ Create a new **Cart management** component and then add it to **signals-user-pro
 
 ![Result](/img/angular/signals_cart_management.png "Angular 17 - Signals Cart Management")
 
+## Example 4: Booking :memo:
+
+In this example, we will manage state in Signals. See the result below:
+
+### Booking list dashboard
+
+![Result](/img/angular/booking-list.png "Angular 17 - Signals State - Booking List Dashboard")
+
+The structure of a project look like as below:
+
+```
+src
+  |
+  app
+  │
+  └───shared
+  │   │
+  │   └───components
+  │       │   form-modal.component.ts
+  │       │   modal.component.ts
+  |       |
+  |       interfaces
+  │       │   bookinglist-item.ts
+  |       |   bookinglist.ts
+  |       |
+  |       services
+  |       |   booking-list.service.ts
+  |       |   storage.service.ts
+  │
+  |---signals-feature
+  |   |
+  |   |---booking
+  |      |
+  |      |---ui
+  |      |   booking-list.component.ts
+  |      |
+  |      | booking.component.ts
+  |      |
+  |   |---booking-detail
+  |      |
+  |      |---ui
+  |      |   booking-detail-header.component.ts
+  |      |   booking-detail-listing.component.ts
+  |      |
+  |      | booking-detail.component.ts
+  |      | booking-detail.service.ts
+  |
+  |   signals-feature.component.html
+  |   signals-feature.component.ts
+
+  app.routes.ts
+```
+
+Create a new **Booking** component to manage list books and then using Angular Material to style the UI/UX.
+After that add it to **signals-user-profile.component.html**
+
+```html title="signals-user-profile.component.html" {18-20}
+<app-main-layout>
+  <ng-container title> Signals </ng-container>
+  <ng-container container>
+    <mat-tab-group>
+      <mat-tab label="Example">
+        <h2>Counter: {{ count() }}</h2>
+        <h2>DoubleCount: {{ doubleCount() }}</h2>
+        <button mat-raised-button color="primary" (click)="updateCount()">
+          Click
+        </button>
+      </mat-tab>
+      <mat-tab label="User Profile">
+        <app-user-profile />
+      </mat-tab>
+      <mat-tab label="Cart Manager">
+        <app-cart />
+      </mat-tab>
+      <mat-tab label="Booking">
+        <app-booking />
+      </mat-tab>
+    </mat-tab-group>
+  </ng-container>
+</app-main>
+```
+
+```ts title="signals-feature.component.ts"
+...
+@Component({
+  selector: "app-signals-feature",
+  standalone: true,
+  imports: [
+    CommonModule,
+    MainLayoutComponent,
+    MatButtonModule,
+    MatTabsModule,
+    UserProfileComponent,
+    CartComponent,
+    //highlight-next-line
+    BookingComponent,
+  ],
+  templateUrl: "./signals-feature.component.html",
+})
+...
+```
+
+Create interfaces for Booking list.
+
+<CodeBlock language="tsx" title="bookinglist.ts" showLineNumbers="true">
+  {BookinglistInterface}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="bookinglist-item.ts" showLineNumbers="true">
+  {BookinglistItemInterface}
+</CodeBlock>
+
+Create common modal component for Booking list.
+
+<CodeBlock language="tsx" title="modal.component.ts" showLineNumbers="true">
+  {ModalComponent}
+</CodeBlock>
+
+<CodeBlock
+  language="tsx"
+  title="form-modal.component.ts"
+  showLineNumbers="true"
+>
+  {FormModalComponent}
+</CodeBlock>
+
+Create a new `app-booking` component.
+
+<details>
+  <summary>booking.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingComponent}
+  </CodeBlock>
+</details>
+
+Code for the `app-bookinglist` component.
+
+<details>
+  <summary>booking-list.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingListComponent}
+  </CodeBlock>
+</details>
+
+Create a `BookinglistService`, using Signal to manage `state`.
+
+<details>
+  <summary>booking-list.service.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingListService}
+  </CodeBlock>
+</details>
+
+Create a storage service to store data in web Browser.
+
+<details>
+  <summary>storage.service.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingStorageService}
+  </CodeBlock>
+</details>
+
+### Booking list details page
+
+We will handle the Booking Details page when you clicks the line item in table. See the result below:
+
+![Result](/img/angular/booking-details-page.png "Angular 17 - Signals State - Booking Details page")
+
+:page_facing_up: Update the `routes` for **Booking Details** page.
+
+Creating a **lazy router** for booking details page
+
+<details>
+  <summary>app.routes.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingRoutes}
+  </CodeBlock>
+</details>
+
+:page_facing_up: Create a `service` for **booking detail** page.
+
+Handle `add`, `edit`, `remove`, `toggle`, `reset` functions for booking details page.
+
+<details>
+  <summary>booking-detail.service.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingDetailService}
+  </CodeBlock>
+</details>
+
+:page_facing_up: Create a **booking details** page.
+
+<details>
+  <summary>booking-detail.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingDetailComponent}
+  </CodeBlock>
+</details>
+
+:page_facing_up: Add **booking details header** page.
+
+Handle `addItem`, `reset` booking list item.
+
+<details>
+  <summary>booking-detail-header.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingDetailHeaderComponent}
+  </CodeBlock>
+</details>
+
+:page_facing_up: Add **booking details listing** page.
+
+Handle `toggle`, `edit`, `delete` booking item.
+
+<details>
+  <summary>booking-detail-listing.component.ts</summary>
+  <CodeBlock language="tsx" showLineNumbers="true">
+    {BookingDetailListingComponent}
+  </CodeBlock>
+</details>
+
 ---
 
 :eight_pointed_black_star: Link reference
@@ -228,3 +504,5 @@ Create a new **Cart management** component and then add it to **signals-user-pro
 :point_right: https://angular.dev/guide/signals
 
 :point_right: https://hackernoon.com/a-guide-to-angular-signals-with-practical-use-cases-part-2
+
+:point_right: https://github.com/joshuamorony/angularstart-quicklists/
