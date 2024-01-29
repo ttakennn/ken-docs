@@ -1,0 +1,28 @@
+import CodeBlock from '@theme/CodeBlock';
+import appInterceptor from '!!raw-loader!@site/src/components/Angular/routing/shared/interceptor/app.interceptor.ts';
+import spinnerInterceptor from '!!raw-loader!@site/src/components/Angular/routing/shared/interceptor/spinner.interceptor.ts';
+import authInterceptor from '!!raw-loader!@site/src/components/Angular/routing/shared/interceptor/auth.interceptor.ts';
+
+Creating interceptors in folder Shared. The structure project at [**here**](#routing-structure)
+
+> App interceptor => Class
+
+> Spinner & Auth interceptor => Functional
+
+```bash
+ng g interceptor app
+ng g interceptor spinner --functional
+ng g interceptor auth  -- functional
+```
+
+<CodeBlock language="tsx" title="app.interceptor.ts" showLineNumbers="true">
+  {appInterceptor}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="spinner.interceptor.ts" showLineNumbers="true">
+  {spinnerInterceptor}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="auth.interceptor.ts" showLineNumbers="true">
+  {authInterceptor}
+</CodeBlock>

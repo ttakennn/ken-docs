@@ -1,0 +1,44 @@
+Adding interceptors in **app.config.ts** file.
+
+```ts title="app.config.ts" {3,4,5,6}
+...
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideHttpClient( // http client
+      withInterceptors([authInterceptor, spinnerInterceptor]), // register interceptor
+    ),
+    provideRouter(routes),
+  ],
+};
+...
+```
+
+:::info
+These interceptors will be run when you call APIs which it could set `token`, `header`... in your APIs.
+:::
+
+**Register class based interceptor.**
+
+```ts title="app.config.ts" {6,9}
+...
+export const appConfig: ApplicationConfig = {
+  providers: [
+    // http client
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withInterceptors([authInterceptor, spinnerInterceptor]),
+    ),
+    { provide: HTTP_INTERCEPTORS, useClass: AppInterceptor, multi: true },
+    provideRouter(routes),
+  ],
+};
+...
+```
+
+Re-lauching the browser then open `Console` we can see:
+
+```bash
+app interceptor...
+auth interceptor...
+spinner interceptor...
+```

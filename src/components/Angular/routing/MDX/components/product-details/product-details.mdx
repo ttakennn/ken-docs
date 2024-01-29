@@ -1,0 +1,72 @@
+import CodeBlock from '@theme/CodeBlock';
+import ProductDetailsComponent from '!!raw-loader!@site/src/components/Angular/routing/product/product-details/product-details.component.ts';
+import ProductRoutes from '!!raw-loader!@site/src/components/Angular/routing/product/product.routes.ts';
+import ProductGuardService from '!!raw-loader!@site/src/components/Angular/routing/product/services/product-details.guard.ts';
+
+Create a **Product Details** component.
+
+```bash
+ng g c ProductDetails --standalone
+```
+
+<CodeBlock language="tsx" title="product-details.component.ts" showLineNumbers="true">
+  {ProductDetailsComponent}
+</CodeBlock>
+
+Add guard service.
+
+<CodeBlock language="tsx" title="product-details.guard.ts" showLineNumbers="true">
+  {ProductGuardService}
+</CodeBlock>
+
+Create routing for **Product**.
+
+<CodeBlock language="tsx" title="product.routes.ts" showLineNumbers="true">
+  {ProductRoutes}
+</CodeBlock>
+
+Add **Product** routes to root routes.
+
+```ts title="app.routes.ts" {4,5,6,7}
+...
+export const routes: Routes = [
+  { path: 'home', title: 'Home', component: HomeComponent },
+  {
+    path: 'products',
+    loadChildren: () => import('./product/product.routes').then((r) => r.PRODUCT_ROUTES),
+  },
+  { path: 'about', title: 'About', component: AboutComponent },
+  { path: 'contact', title: 'Contact', component: ContactComponent },
+  { path: 'signals', title: 'Signals', component: SignalsFeatureComponent },
+  {
+    path: 'booking-detail/:id',
+    loadComponent: () => import('./signals-feature/booking-detail/booking-detail.component'),
+  },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '**', component: NotFoundComponent },
+];
+
+```
+
+```ts title="app.config.ts" {5}
+...
+export const appConfig: ApplicationConfig = {
+  providers: [
+    ...
+    provideRouter(routes),
+    ...
+  ],
+};
+
+```
+
+```ts title="main.ts"
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
+
+bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));
+```
+
+When launching your browser, open the Network tab. The product bundle will be loaded when you navigate to the Product page.
+This can increase the performance of your website.

@@ -1,8 +1,8 @@
 {
-  "label": "Core",
+  "label": "Core v17",
   "position": 3,
   "link": {
     "type": "generated-index",
-    "description": "Core knowledge in the Angular framework is helpful for web application development."
+    "description": "Core knowledge in the Angular framework is helpful for web application development. We will use the bootstrapApplication to develop the website."
   }
 }
