@@ -45,6 +45,21 @@ src
   |      | user-profile.component.ts
   |      | profile.service.ts
   |      |
+  |   |--signals-store
+  |      | signals-feature.component.ts
+  |      |
+  |      |---components
+  |      |   change-address.component.ts
+  |      |   change-company.component.ts
+  |      |   change-name.component.ts
+  |      |
+  |      |---services
+  |      |   signal-simple-store.service.ts
+  |      |   user-signal-state.service.ts
+  |      |
+  |      |---shared-ui
+  |      |   page-content.component.ts
+  |      |
   |---signals-feature.component.ts
   |
   app.routes.ts

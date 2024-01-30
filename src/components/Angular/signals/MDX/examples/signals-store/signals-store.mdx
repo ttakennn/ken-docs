@@ -1,0 +1,69 @@
+import CodeBlock from '@theme/CodeBlock';
+import SignalStore from '!!raw-loader!@site/src/components/Angular/signals/signals-store/services/signal-simple-store.service.ts';
+import UserSignal from '!!raw-loader!@site/src/components/Angular/signals/signals-store/services/user-signal-state.service.ts';
+
+import NameComponent from '!!raw-loader!@site/src/components/Angular/signals/signals-store/components/change-name.component.ts';
+import CompanyComponent from '!!raw-loader!@site/src/components/Angular/signals/signals-store/components/change-company.component.ts';
+import AddressComponent from '!!raw-loader!@site/src/components/Angular/signals/signals-store/components/change-address.component.ts';
+
+import PageContentComponent from '!!raw-loader!@site/src/components/Angular/signals/signals-store/shared-ui/page-content.component.ts';
+import SignalsStoreComponent from '!!raw-loader!@site/src/components/Angular/signals/signals-store/signals-store.component.ts';
+
+In this example, we will create a **Signal Store** to sharing the `State` to components.
+Please see the structure project at [here](#signals-structure-project).
+
+**Create Signal Service**
+
+<CodeBlock language="tsx" title="signal-simple-store.service.ts" showLineNumbers="true">
+  {SignalStore}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="user-signal-state.service.ts" showLineNumbers="true">
+  {UserSignal}
+</CodeBlock>
+
+**Create `name`, `company`, `address` components**
+
+<CodeBlock language="tsx" title="change-name.component.ts" showLineNumbers="true">
+  {NameComponent}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="change-company.component.ts" showLineNumbers="true">
+  {CompanyComponent}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="change-address.component.ts" showLineNumbers="true">
+  {AddressComponent}
+</CodeBlock>
+
+**Create layout content component.**
+
+<CodeBlock language="tsx" title="page-content.component.ts" showLineNumbers="true">
+  {PageContentComponent}
+</CodeBlock>
+
+**Creating a signals store component as below:**
+
+<CodeBlock language="tsx" title="signals-store.component.ts" showLineNumbers="true">
+  {SignalsStoreComponent}
+</CodeBlock>
+
+Using Tailwind CSS to style for this project. Import CDN link to index HTML
+
+```HTML title="index.html" showLineNumbers="true" {6}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  ...
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+...
+</html>
+```
+
+**Result** :jack_o_lantern:
+
+![Result](/img/angular/signals-store.png 'Angular 17 - Signals Store')
+
+When you click `Change Name`, `Change Company`, `Change Address` and then it will update the data to Current State as well.
