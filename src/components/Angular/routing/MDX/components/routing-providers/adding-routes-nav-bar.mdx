@@ -1,0 +1,49 @@
+import CodeBlock from '@theme/CodeBlock';
+import UserRoutes from '!!raw-loader!@site/src/components/Angular/routing/users/users.routes.ts';
+
+Create a **routes** for `user`.
+
+<CodeBlock language="tsx" title="user.routes.ts" showLineNumbers="true">
+  {UserRoutes}
+</CodeBlock>
+
+Update **routes** in **app.routes.ts** file
+
+```ts title="app.routes.ts" showLineNumbers="true"
+export const routes: Routes = [
+...
+  {
+    path: 'users',
+    loadChildren: () => import('./users/users.routes').then((r) => r.USER_ROUTES),
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./admin/admin.component'), // need to export default class
+  },
+...
+]
+
+```
+
+Adding `User`, `Admin` to Navbar and set it below the `Products`.
+
+```html title="nav-bar.component.ts" showLineNumbers="true"
+<a
+  class="mr-5 hover:text-gray-900"
+  routerLink="/users"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  ariaCurrentWhenActive="page"
+>
+  Users
+</a>
+<a
+  class="mr-5 hover:text-gray-900"
+  routerLink="/admin"
+  routerLinkActive="active"
+  [routerLinkActiveOptions]="{ exact: true }"
+  ariaCurrentWhenActive="page"
+>
+  Admin
+</a>
+```

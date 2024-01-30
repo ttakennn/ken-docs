@@ -10,9 +10,7 @@ import { HttpClient } from '@angular/common/http';
   imports: [RouterModule, RouterLink, MatButtonModule],
   template: `
     <h1>Product List</h1>
-    <button mat-raised-button color="primary" [routerLink]="'/products/12'">
-      Navigate to Product Details
-    </button>
+    <button mat-raised-button color="primary" [routerLink]="'/products/12'">Navigate to Product Details</button>
   `,
 })
 export class ProductComponent {

@@ -1,0 +1,24 @@
+import CodeBlock from '@theme/CodeBlock';
+import UserService from '!!raw-loader!@site/src/components/Angular/routing/shared/services/user.service.ts';
+import UserExternalService from '!!raw-loader!@site/src/components/Angular/routing/shared/services/user-external.service.ts';
+
+Interface for `User`
+
+```ts title="user.ts"
+export interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+}
+```
+
+Creating services for `User` component.
+
+<CodeBlock language="tsx" title="user.service.ts" showLineNumbers="true">
+  {UserService}
+</CodeBlock>
+
+<CodeBlock language="tsx" title="user-external.service.ts" showLineNumbers="true">
+  {UserExternalService}
+</CodeBlock>

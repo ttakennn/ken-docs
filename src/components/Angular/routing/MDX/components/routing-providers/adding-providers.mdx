@@ -1,0 +1,25 @@
+Adding Providers in **app.routes.ts** file.
+
+```ts title="app.routes.ts" showLineNumbers="true"
+export const routes: Routes = [
+...
+{
+  path: 'users',
+  loadChildren: () => import('./users/users.routes').then((r) => r.USER_ROUTES),
+  //highlight-next-line
+  providers: [{ provide: UserService, useExisting: UserExternalService }],
+},
+{
+  path: 'admin',
+  loadComponent: () => import('./admin/admin.component'), // need to export default class
+},
+...
+]
+```
+
+`User` component will get data from **UserExternalService** instead of **UserService**.
+
+**Result as below**
+
+![Result](/img/angular/routing/routing-user-list.png 'Angular 17 - Routing - User list page')
+![Result](/img/angular/routing/routing-admin-list.png 'Angular 17 - Routing - Admin list page')

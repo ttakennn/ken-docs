@@ -1,0 +1,39 @@
+import CodeBlock from '@theme/CodeBlock';
+import ProductComponent from '!!raw-loader!@site/src/components/Angular/routing/product/product.component.ts';
+
+```ts title="product-children.component"
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-product-children',
+  standalone: true,
+  imports: [],
+  template: ` <h1>Product children works!</h1> `,
+})
+export class ProductChildrenComponent {}
+```
+
+Update `Product` component as below
+
+```ts title="product.component.ts" showLineNumbers="true"
+@Component({
+  selector: 'app-product',
+  standalone: true,
+  imports: [RouterModule, RouterLink, MatButtonModule],
+  // highlight-next-line
+  imports: [RouterModule, RouterOutlet, RouterLink, MatButtonModule],
+  template: `
+    <h1>Product List</h1>
+    // highlight-start
+    <button mat-raised-button color="warn" [routerLink]="'/products/children'">
+      Children
+    </button>
+    // highlight-end
+    <button mat-raised-button color="primary" [routerLink]="'/products/12'">
+      Navigate to Product Details
+    </button>
+    // highlight-next-line
+    <router-outlet />
+  `,
+})
+```
