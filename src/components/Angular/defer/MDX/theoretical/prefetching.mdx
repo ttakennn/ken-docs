@@ -1,0 +1,200 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+Angular’s <Highlight>defer</Highlight> block natively supports prefetching, ensuring resources are primed and ready, this minimizing wait times and elevating user experience.
+
+**Basic Prefetching**
+
+Additionally, the component chunk will be prefetched when <Highlight>prefetchCondition</Highlight> is true.
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (when isVisible; prefetch when prefetchCondition) {
+      <app-basic-defer />
+    } @placeholder { 
+      Placeholder
+    }
+  `,
+})
+class AppComponent {
+  isVisible = false;
+  prefetchCondition = false;
+}
+```
+
+**Immediate Prefetching**
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (when isVisible; prefetch on immediate) {
+      <app-basic-defer />
+    } @placeholder { 
+      Placeholder
+    }
+  `,
+})
+class AppComponent {
+  isVisible = false;
+}
+```
+
+The <Highlight>prefetch on immediate</Highlight> condition ensures that the the component chunk is loaded immediately
+
+**Idle Prefetching**
+
+The <Highlight>prefetch on idle</Highlight> condition ensures that the component chunk is loaded during the browser's idle times. This is achieved using the <Highlight>requestIdleCallback</Highlight> API.
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (when isVisible; prefetch on idle) {
+      <app-basic-defer />
+    } @placeholder {
+      Placeholder
+    }
+  `,
+})
+class AppComponent {
+  isVisible = false;
+}
+```
+
+**Timer-Based Prefetching**
+
+The <Highlight>prefetch on timer(100ms)</Highlight> condition ensures that the the component is loaded after a delay of 100 milliseconds
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (when isVisible; prefetch on timer(100ms)) {
+      <app-basic-defer />
+    } @placeholder {
+      Placeholder
+    }
+  `,
+})
+class AppComponent {
+  isVisible = false;
+}
+```
+
+**Viewport-Based Prefetching**
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (when isVisible; prefetch on viewport(trigger)) {
+      <app-basic-defer />
+    } @placeholder {
+      Placeholder
+    }
+  `,
+})
+class AppComponent {
+  isVisible = false;
+}
+```
+
+**Advanced Conditions: Minimum and After**
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (when isVisible; prefetch when prefetchTrigger) {
+      <app-basic-defer />
+    } @loading (after 100ms; minimum 150ms) {
+      Loading
+    } @placeholder (minimum 100ms) {
+      Placeholder
+    } @error {
+      Error
+    }
+  `,
+})
+class AppComponent {
+  isVisible = false;
+}
+```
+
+<Highlight>after 100ms</Highlight>: The loading state appears after a 100ms delay.
+
+<Highlight>minimum 150ms</Highlight>: The loading state persists for at least 150ms.
+
+<Highlight>minimum 100ms</Highlight>: The placeholder remains visible for a minimum of 100ms.
+
+Note: The <Highlight>@loading</Highlight> state is bypassed when resources have been prefetched.
+
+**Integrating the defer Block within the for of Loop**
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @for (item of items; track item) {
+      @defer (on timer(500ms)) {
+        <app-basic-defer />
+      } @placeholder {
+        Placeholder for {{ item }}
+      }
+    }
+  `
+})
+class AppComponent {
+  items = [1,2,3,4];
+}
+
+```
+For each `item` in the `items` array, the `defer` block introduces a delay of 500ms before rendering the **app-basic-defer** component.
+Meanwhile, a `placeholder` specific to the current `item` is displayed.
+
+**Incorporating the defer Block with Content Projection**
+
+The `defer` block integrates effortlessly with content projection, enhancing the dynamic inclusion of content.
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+     @if (step === 0) {
+        <app-step-one />
+        <button (click)="updateStep(1)">Next</button>
+     }
+
+     @defer (prefetch on idle) {
+        @if (step === 1) {
+          <app-step-two />
+          <button (click)="updateStep(2)">Next</button>
+        }
+     }
+
+
+     @defer (prefetch on idle) {
+        @if (step === 2) {
+          <app-step-three />
+        }
+     }
+  `
+})
+class AppComponent {
+  step = 0;
+
+  updateStep(step: number) {
+    this.step = step;
+  }
+}
+```
+

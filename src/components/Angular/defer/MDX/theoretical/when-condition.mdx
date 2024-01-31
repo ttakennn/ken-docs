@@ -1,0 +1,35 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+The defer block is paired with the when condition, which expects a boolean value. Angular's compiler processes this by breaking down the component, directive, and pipe into separate **chunks**.
+
+```ts title="defer.component.ts"
+@Component({
+  standalone: true,
+  imports: [CommonModule, MatButton],
+  template: `
+    @defer (when isVisible) {
+    <h4>Basic defer</h4>
+    <div>{{ 'foo' }}</div>
+    } @loading {
+    <div>loading...</div>
+    } @placeholder {
+    <div>placeholder...</div>
+    } @error {
+    <div>Failed something...</div>
+    }
+
+    <button mat-raised-button color="primary" (click)="isVisible = true">Load</button>
+  `,
+})
+```
+
+<Highlight>@loading</Highlight>: Displays the specified content during the loading phase of dependencies.
+
+<Highlight>@placeholder</Highlight>: Displays the given content as an interim display until the content completes
+rendering.
+
+<Highlight>@error</Highlight>: Displays the specified content if there’s an issue loading content’s dependencies.
+
+**Result**
+
+![Result](/img/angular/defer/angular-defer.gif 'Angular 17 - Defer When condition')

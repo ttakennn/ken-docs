@@ -1,0 +1,48 @@
+---
+description: Defer in Angular framework
+id: angular-defer
+title: Defer
+slug: /angular-defer
+sidebar_position: 2
+tags: [Angular, Defer]
+keywords:
+  - angular
+  - defer
+last_update:
+  date: 1/31/2024
+  author: Admin
+---
+
+import WhenConditionComponent from '@site/src/components/Angular/defer/MDX/theoretical/when-condition.mdx';
+import OnConditionComponent from '@site/src/components/Angular/defer/MDX/theoretical/on-condition.mdx';
+import OnIdleConditionComponent from '@site/src/components/Angular/defer/MDX/theoretical/on-idle-condition.mdx';
+import InteractionConditionComponent from '@site/src/components/Angular/defer/MDX/theoretical/interaction-condition.mdx';
+import PrefetchingComponent from '@site/src/components/Angular/defer/MDX/theoretical/prefetching.mdx';
+
+The primary purpose of the defer block is to lazy load content. Whether it’s a component, directive, or pipe, if it’s placed inside a defer block, Angular will only load it based on the specified conditions or events. This is particularly useful for performance optimization, especially when certain components aren’t immediately needed or visible to the user.
+
+### When condition
+
+<WhenConditionComponent />
+
+### On condition
+
+<OnConditionComponent />
+
+### On Idle condition
+
+<OnIdleConditionComponent />
+
+### Interaction condition
+
+<InteractionConditionComponent />
+
+### Prefetching
+
+<PrefetchingComponent />
+
+---
+
+## Link references :eight_pointed_black_star:
+
+:point_right: https://netbasal.com/a-comprehensive-guide-to-angulars-defer-block-468c74048df4

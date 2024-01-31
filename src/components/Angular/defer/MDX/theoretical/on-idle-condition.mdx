@@ -1,0 +1,15 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (on idle) {
+      <app-basic-defer />
+    }
+  `
+})
+```
+
+The component is loaded and rendered during browser idle times, leveraging the [requestIdleCallback](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback) API.

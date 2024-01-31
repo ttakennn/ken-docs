@@ -1,4 +1,4 @@
-import Highlight from "@site/src/components/highlight/highlight.js";
+import Highlight from '@site/src/components/highlight/highlight.js';
 
 Angular provided untracked function which allows you to execute any function in a non-reactive context and sometimes it will return values.
 
@@ -21,24 +21,22 @@ export class AppComponent {
   constructor() {
     // This effect method will be called only once since no signal property is used in its context.
     effect(() => {
-      console.log("Empty effect method");
+      console.log('Empty effect method');
     });
 
     // The below effect will be called whenever the user signal is changed.
     effect(() => {
-      console.log("User effect invoked " + this.user());
+      console.log('User effect invoked ' + this.user());
     });
 
     // This callback will be invoked when either the user or count signal is changed.
     effect(() => {
-      console.log(
-        "User and View effect invoked " + this.user() + " " + this.count()
-      );
+      console.log('User and View effect invoked ' + this.user() + ' ' + this.count());
     });
 
     // This effect method will be called when the very first time the count signal is set then it will become inert since the count is wrapped in the untracked method. This method will help you execute the signals inside a non-reactive context.
     effect(() => {
-      console.log("Count effect invoked " + untracked(this.count));
+      console.log('Count effect invoked ' + untracked(this.count));
     });
   }
 
@@ -56,6 +54,6 @@ export class AppComponent {
 }
 ```
 
-In the above code, <Highlight color="#4794c7">nCount</Highlight> simply unwrap the signal value and <Highlight color="#4794c7">factor</Highlight> will hold the result of the arbitrary function run inside the untracked function.
+In the above code, <Highlight>nCount</Highlight> simply unwrap the signal value and <Highlight>factor</Highlight> will hold the result of the arbitrary function run inside the untracked function.
 
-The <Highlight color="#4794c7">revenue</Highlight> computed signal will be computed only once(value would be 5) based on its dependency count. For subsequent set operations, revenue will not recalculate and will remain in the same value.
+The <Highlight>revenue</Highlight> computed signal will be computed only once(value would be 5) based on its dependency count. For subsequent set operations, revenue will not recalculate and will remain in the same value.

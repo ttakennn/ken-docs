@@ -1,0 +1,15 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+Immediate Rendering with **“On Immediate”** Condition
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (on immediate) {
+      <app-basic-defer />
+    }
+  `
+})
+```

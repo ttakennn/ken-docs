@@ -1,0 +1,91 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+The component loading and rendering is deferred and will only render once the button, denoted by the #trigger reference, is clicked.
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (on interaction(trigger)) {
+      <app-basic-defer />
+    }
+    @placeholder {
+      Placeholder
+    }
+
+    <button #trigger>Trigger</button>
+  `
+})
+```
+
+Supported interaction events include `click`, `focus`, `touch`, and `input`.
+
+In certain situations, you might not want to tie the defer block to a specific element. Angular addresses this by allowing deferred content to load based on interactions with the placeholder itself:
+
+```ts
+@Component({
+  standalone: true,
+  imports: [BasicDeferComponent],
+  template: `
+    @defer (on interaction) {
+      <app-basic-defer />
+    }
+    @placeholder {
+      <button>Trigger</button>
+    }
+  `
+})
+```
+
+**Hover-Based Rendering**
+
+```ts
+@Component({
+  standalone: true,
+  template: `
+    @defer (on hover(trigger)) {
+      <app-basic-defer />
+    } @placeholder {
+      Placeholder
+    }
+
+    <button #trigger>Trigger</button>
+  `
+})
+```
+
+**Timer-Driven Rendering**
+
+```ts
+@Component({
+  standalone: true,
+  template: `
+    @defer (on timer(1500ms)) {
+      <app-basic-defer />
+    } @placeholder {
+      Placeholder
+    }
+  `
+})
+```
+
+**Viewport-Based Rendering**
+
+```ts
+@Component({
+  standalone: true,
+  template: `
+    @defer (on viewport(trigger)) {
+      <app-basic-defer />
+    } @placeholder {
+      Placeholder
+    }
+
+    <div #trigger style="margin-top: 1500px">Trigger</div>
+  `
+})
+
+```
+
+The **@defer (on viewport(trigger))** block ensures that the component is rendered only when the div (identified by the #trigger template reference variable) enters the viewport.
