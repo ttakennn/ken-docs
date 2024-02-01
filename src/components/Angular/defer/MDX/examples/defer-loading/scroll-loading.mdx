@@ -1,0 +1,36 @@
+import CodeBlock from '@theme/CodeBlock';
+import Highlight from '@site/src/components/highlight/highlight.js';
+import PostComponent from '!!raw-loader!@site/src/components/Angular/defer/components/defer-loading/components/comments-post/comments-post.component.ts';
+import InstagramComponentTS from '!!raw-loader!@site/src/components/Angular/defer/components/defer-loading/components/instagram-post/instagram-post.component.ts';
+import InstagramComponentHTML from '!!raw-loader!@site/src/components/Angular/defer/components/defer-loading/components/instagram-post/instagram-post.component.html';
+import DeferComponent from '!!raw-loader!@site/src/components/Angular/defer/components/defer-loading/defer-loading.component.ts';
+
+**Create post component**
+<CodeBlock language="ts" title="comments-post.component.ts" showLineNumbers="true">
+  {PostComponent}
+</CodeBlock>
+
+
+**Create instagram component**
+
+<CodeBlock language="ts" title="instagram-post.component.ts" showLineNumbers="true">
+  {InstagramComponentTS}
+</CodeBlock>
+
+<CodeBlock language="html" title="instagram-post.component.html" showLineNumbers="true">
+  {InstagramComponentHTML}
+</CodeBlock>
+
+
+**Create Defer Loading component**
+
+<CodeBlock language="ts" title="defer-loading.component.ts" showLineNumbers="true">
+  {DeferComponent}
+</CodeBlock>
+
+On this `viewport`, where you can see the screen, Instagram posts will autoload within your view. It will call the <Highlight>app-instagram-post</Highlight> component.
+
+
+**Result**
+
+![Result](/img/angular/defer/angular-defer-loading.gif 'Angular 17 - Defer Loading feature')

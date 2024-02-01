@@ -17,7 +17,11 @@ import WhenConditionComponent from '@site/src/components/Angular/defer/MDX/theor
 import OnConditionComponent from '@site/src/components/Angular/defer/MDX/theoretical/on-condition.mdx';
 import OnIdleConditionComponent from '@site/src/components/Angular/defer/MDX/theoretical/on-idle-condition.mdx';
 import InteractionConditionComponent from '@site/src/components/Angular/defer/MDX/theoretical/interaction-condition.mdx';
-import PrefetchingComponent from '@site/src/components/Angular/defer/MDX/theoretical/prefetching.mdx';
+import PrefetchingComponent from '@site/src/components/Angular/defer/MDX/theoretical/prefetching-condition.mdx';
+
+import DeferSetupProject from '@site/src/components/Angular/defer/MDX/examples/setup-defer-project/setup-defer-project.mdx';
+import DeferMockupData from '@site/src/components/Angular/defer/MDX/examples/defer-loading/mockup-data.mdx';
+import DeferScrollLoading from '@site/src/components/Angular/defer/MDX/examples/defer-loading/scroll-loading.mdx';
 
 The primary purpose of the defer block is to lazy load content. Whether it’s a component, directive, or pipe, if it’s placed inside a defer block, Angular will only load it based on the specified conditions or events. This is particularly useful for performance optimization, especially when certain components aren’t immediately needed or visible to the user.
 
@@ -41,8 +45,24 @@ The primary purpose of the defer block is to lazy load content. Whether it’s a
 
 <PrefetchingComponent />
 
+## Examples
+
+### Defer Loading
+
+<DeferSetupProject />
+
+### Mockup Data
+
+<DeferMockupData />
+
+### Handle Scroll Loading
+
+<DeferScrollLoading />
+
 ---
 
 ## Link references :eight_pointed_black_star:
 
 :point_right: https://netbasal.com/a-comprehensive-guide-to-angulars-defer-block-468c74048df4
+
+:point_right: https://github.com/alfredoperez/ng-demos/tree/main/libs/demos/src/lib/demos/defer-loading
