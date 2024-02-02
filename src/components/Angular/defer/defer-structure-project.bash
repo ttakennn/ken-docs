@@ -25,6 +25,21 @@ src
   |       |        |   defer-mockup.ts
   |       |        |
   |       |        defer-loading.component.ts
-  │       |
+  |       |        |
+  |       |     |--defer-product-loading
+  |       |        |
+  |       |        |--components
+  |       |           |
+  |       |           |-product-item
+  |       |           |  product-item.component.ts
+  |       |           |
+  |       |           |-product-list
+  |       |           |  product-list.component.ts
+  |       |           |
+  |       |        |--interface
+  |       |        |     product.ts
+  |       |        |
+  |       |        |--services
+  |       |             product.service.ts
   |       defer.component.ts
   |       |

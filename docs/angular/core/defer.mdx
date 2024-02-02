@@ -23,6 +23,8 @@ import DeferSetupProject from '@site/src/components/Angular/defer/MDX/examples/s
 import DeferMockupData from '@site/src/components/Angular/defer/MDX/examples/defer-loading/mockup-data.mdx';
 import DeferScrollLoading from '@site/src/components/Angular/defer/MDX/examples/defer-loading/scroll-loading.mdx';
 
+import DeferProductLoading from '@site/src/components/Angular/defer/MDX/examples/defer-product-loading/defer-product-loading.mdx';
+
 The primary purpose of the defer block is to lazy load content. Whether it’s a component, directive, or pipe, if it’s placed inside a defer block, Angular will only load it based on the specified conditions or events. This is particularly useful for performance optimization, especially when certain components aren’t immediately needed or visible to the user.
 
 ### When condition
@@ -47,17 +49,21 @@ The primary purpose of the defer block is to lazy load content. Whether it’s a
 
 ## Examples
 
-### Defer Loading
-
 <DeferSetupProject />
 
-### Mockup Data
+### Defer Loading
+
+### :small_blue_diamond:  Mockup Data
 
 <DeferMockupData />
 
-### Handle Scroll Loading
+### :small_blue_diamond: Handle Scroll Loading
 
 <DeferScrollLoading />
+
+### Defer Product List
+
+<DeferProductLoading />
 
 ---
 
@@ -66,3 +72,7 @@ The primary purpose of the defer block is to lazy load content. Whether it’s a
 :point_right: https://netbasal.com/a-comprehensive-guide-to-angulars-defer-block-468c74048df4
 
 :point_right: https://github.com/alfredoperez/ng-demos/tree/main/libs/demos/src/lib/demos/defer-loading
+
+:point_right: https://robert-isaac.medium.com/infinite-scroll-made-easier-with-angular-defer-49f3f6751f2c
+
+:point_right: https://github.com/robertIsaac/infinite-scroll
