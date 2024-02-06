@@ -1,0 +1,83 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:diamond_shape_with_a_dot_inside: Emits its last value on completion.
+
+```ts title="rxjs-async-subject.ts"
+  onAsyncSubject() {
+    const asyncSubject = new AsyncSubject();
+
+    asyncSubject.next(100);
+    asyncSubject.next(200);
+    asyncSubject.next(300);
+
+    asyncSubject.subscribe({
+      next: (value) => console.log('subscribe 1: ', value),
+    });
+
+    asyncSubject.subscribe({
+      next: (value) => console.log('subscribe 2: ', value),
+    });
+
+    asyncSubject.subscribe({
+      next: (value) => console.log('subscribe 3: ', value),
+    });
+  }
+
+  // console.log don't show anything here
+```
+When you check the console which don't see anything. Because the `Async Subject` need to call the `complete()` to emit the last value.
+
+```ts title="rxjs-async-subject.ts"
+  onAsyncSubject() {
+    ...
+
+    asyncSubject.next(100);
+    asyncSubject.next(200);
+    asyncSubject.next(300);
+    asyncSubject.complete();
+
+    ...
+  }
+
+  // Output
+  // subscribe 1: 300
+  // subscribe 2: 300
+  // subscribe 3: 300
+```
+
+The value always is 300. The `Async Subject` only emit the last value to subscribes.
+
+
+Please check another example. If the source observable completes or the method <Highlight>complete</Highlight> is called on the subject,
+set the state of the subject to <Highlight>stopped</Highlight> and send the current latest value alongside the complete notification to all existing subscriptions;
+remove the subscriptions from the container.
+```ts title="rxjs-async-subject.ts"
+  onAsyncSubject() {
+    const asyncSubject = new AsyncSubject();
+
+    asyncSubject.next(100);
+    asyncSubject.next(200);
+    asyncSubject.next(300);
+
+    asyncSubject.subscribe({
+      next: (value) => console.log('subscribe 1: ', value),
+    });
+
+    asyncSubject.complete();
+    asyncSubject.next(400);
+
+    asyncSubject.subscribe({
+      next: (value) => console.log('subscribe 2: ', value),
+    });
+
+    asyncSubject.subscribe({
+      next: (value) => console.log('subscribe 3: ', value),
+    });
+  }
+
+  // Output
+  // subscribe 1: 300
+  // subscribe 2: 300
+  // subscribe 3: 300
+```
+

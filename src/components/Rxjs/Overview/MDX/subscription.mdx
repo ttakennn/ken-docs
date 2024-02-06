@@ -1,0 +1,40 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+A Subscription is an object that represents a disposable resource, usually the execution of an **Observable**.
+A Subscription has one important method, <Highlight>unsubscribe</Highlight>, that takes no argument and just disposes the resource held by the subscription.
+
+
+```ts title="Subscription Management"
+  private readonly unsubscribe$ = new Subject();
+
+  constructor() {
+    fromEvent(document, 'click')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => {
+        console.log('click here');
+      });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next(null);
+    this.unsubscribe$.complete();
+  }
+```
+
+The Subscription class in RxJS has an <Highlight>add()</Highlight> method that let's you add subscriptions.
+All added subscriptions will be unsubscribed when you call <Highlight>unsubscribe()</Highlight> on the root subscription.
+
+```ts
+  // Create a new subscription
+  const subscription = new Subscription();
+
+  // Subscribe to some observables
+  // and add them to the subscription
+  subscription.add(one$.subscribe({ /* ... */ }));
+  subscription.add(two$.subscribe({ /* ... */ }));
+  subscription.add(three$.subscribe({ /* ... */ }));
+
+  // During clean up
+  // This unsubscribes the subscription of one$, two$ and three$
+  subscription.unsubscribe();
+```

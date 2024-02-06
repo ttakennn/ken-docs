@@ -5,6 +5,11 @@ title: Git Process
 slug: /git-process
 sidebar_position: 1
 tags: [Git]
+keywords:
+  - rxjs
+last_update:
+  date: 01/18/2024
+  author: Admin
 ---
 
 # Git Process

@@ -1,0 +1,55 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:diamond_shape_with_a_dot_inside: Subjects allow multiple observers to subscribe to them and then broadcast the received value to those observers.
+The concept is similar to an <Highlight>EventEmitter</Highlight> that keeps a registry of multiple listeners.
+
+```ts title="Example 1"
+  const subject = new Subject();
+
+  subject.subscribe((data) => console.log(`Subscribe 1: ${data}`));
+  subject.subscribe((data) => console.log(`Subscribe 2: ${data}`));
+  subject.subscribe((data) => console.log(`Subscribe 3: ${data}`));
+
+  subject.next(Math.random());
+  subject.next(123);
+
+  // Output
+  // Subscribe 1: 0.694894930561011
+  // Subscribe 2: 0.694894930561011
+  // Subscribe 3: 0.694894930561011
+
+  // Subscribe 1: 123
+  // Subscribe 2: 123
+  // Subscribe 3: 123
+
+```
+
+Since a Subject is an Observer, this also means you may provide a Subject as the argument to the subscribe of any Observable, like the example below shows:
+```ts title="Example 2"
+  const subject = new Subject<number>();
+
+  subject.subscribe({
+    next: (v) => console.log(`observerA: ${v}`),
+  });
+
+  subject.subscribe({
+    next: (v) => console.log(`observerB: ${v}`),
+  });
+
+  const observable = from([1, 2, 3]);
+
+  observable.subscribe(subject); // You can subscribe providing a Subject
+
+  subject.subscribe({ // this subscribe is not call
+    next: (v) => console.log(`observerC: ${v}`),
+  });
+
+  // Logs:
+  // observerA: 1
+  // observerB: 1
+  // observerA: 2
+  // observerB: 2
+  // observerA: 3
+  // observerB: 3
+
+```

@@ -1,0 +1,48 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:diamond_shape_with_a_dot_inside: A <Highlight>ReplaySubject</Highlight> is similar to a <Highlight>BehaviorSubject</Highlight> in that it can send old values to new subscribers,
+but it can also record a part of the Observable execution.
+
+> A ReplaySubject records multiple values from the Observable execution and replays them to new subscribers.
+```ts
+  const subject = new ReplaySubject(0); // buffer 3 values for new subscribers
+
+  subject.subscribe({
+    next: (v) => console.log(`observerA: ${v}`),
+  });
+
+  subject.next(1);
+  subject.next(2);
+  subject.next(3);
+  subject.next(4);
+
+  subject.subscribe({
+    next: (v) => console.log(`observerB: ${v}`),
+  });
+
+  subject.next(5);
+
+  subject.subscribe({
+    next: (v) => console.log(`observerC: ${v}`),
+  });
+
+  // Output
+  // observerA: 1
+  // observerA: 2
+  // observerA: 3
+  // observerA: 4
+  // observerB: 2 --> log of last 3 values from new subscriber
+  // observerB: 3 --> log of last 3 values from new subscriber
+  // observerB: 4 --> log of last 3 values from new subscriber
+
+  // observerA: 5
+  // observerB: 5
+
+```
+
+Now, how does it compare with <Highlight>BehaviorSubject</Highlight> or a plain <Highlight>Subject</Highlight>?
+> <Highlight>BehaviorSubject</Highlight> always requires an initial value and only stores the most recent value. Subscribers will get that latest value upon subscription. It's like walking into a movie and only catching the most recent scene.
+
+> <Highlight>Subject</Highlight>, on the other hand, doesn't give new subscribers any previously emitted values. It’s the traditional live broadcast. If you're late, you miss out.
+
+> <Highlight>ReplaySubject</Highlight> can remember more than just the last scene. Depending on how it's configured, it might replay the entire movie or just the last few scenes.

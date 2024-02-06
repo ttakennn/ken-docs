@@ -1,0 +1,66 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+> Subscribing to an Observable is analogous to calling a Function.
+
+```ts title="observable.ts"
+  const observable = new Observable((subscriber) => {
+    subscriber.next(1);
+    subscriber.next(2);
+    subscriber.next(3);
+    setTimeout(() => {
+      subscriber.next(4);
+      subscriber.complete();
+    }, 1000);
+  });
+
+  observable.subscribe((data) => console.log(`Observable 1: ${data}`));
+  observable.subscribe((data) => console.log(`Observable 2: ${data}`));
+
+  // Output
+  // Observable 1: 1
+  // Observable 1: 2
+  // Observable 1: 3
+  //
+  // Observable 2: 1
+  // Observable 2: 2
+  // Observable 2: 3
+  //
+  // // timeout 1s
+  // Observable 1: 4
+  // Observable 2: 4
+```
+
+> Observables are like functions with zero arguments, but generalize those to allow multiple values.
+
+```ts title="observable.ts"
+  import { Observable } from 'rxjs';
+
+  const foo = new Observable((subscriber) => {
+    console.log('Hello');
+    subscriber.next(42);
+  });
+
+  foo.subscribe((x) => {
+    console.log(x);
+  });
+
+  foo.subscribe((y) => {
+    console.log(y);
+  });
+
+  // Output
+  // "Hello"
+  // 42
+  // "Hello"
+  // 42
+```
+
+```ts title="observable.ts"
+  const obs = new Observable((observer) => observer.next(Math.random()));
+  obs.subscribe((data) => console.log(`Subscribe 1: ${data}`));
+  obs.subscribe((data) => console.log(`Subscribe 2: ${data}`));
+
+  // Output
+  // Subscribe 1: 0.7821944700414829
+  // Subscribe 2: 0.9643477904247757
+```

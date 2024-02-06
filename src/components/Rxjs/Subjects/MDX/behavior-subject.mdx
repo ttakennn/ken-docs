@@ -1,0 +1,33 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:diamond_shape_with_a_dot_inside: One of the variants of Subjects is the <Highlight>BehaviorSubject</Highlight>,
+which has a notion of "the current value". It stores the latest value emitted to its consumers,
+and whenever a new Observer subscribes, it will immediately receive the "current value" from the <Highlight>BehaviorSubject</Highlight>.
+
+```ts
+  const subject = new BehaviorSubject(0); // 0 is the initial value
+  subject.subscribe({
+    next: (v) => console.log(`observerA: ${v}`),
+  });
+
+  subject.next(1);
+  subject.next(2);
+  subject.next(3);
+
+  subject.subscribe({
+    next: (v) => console.log(`observerB: ${v}`),
+  });
+
+  subject.next(4);
+
+  // Output
+  // observerA 0
+  // observerA 1
+  // observerA 2
+
+  // observerA 3
+  // observerB 3
+
+  // observerA 4
+  // observerB 4
+```

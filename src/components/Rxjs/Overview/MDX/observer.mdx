@@ -1,0 +1,35 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+An **Observer** is a consumer of values delivered by an **Observable**.
+Observers are simply a set of callbacks, one for each type of notification delivered by the Observable:
+<Highlight>next</Highlight>, <Highlight>error</Highlight>, and <Highlight>complete</Highlight>.
+
+```bash
+const observer = {
+  next: (value) => console.log('Observer got a next value: ' + value),
+  error: (err) => console.error('Observer got an error: ' + err),
+  complete: () => console.log('Observer got a complete notification'),
+};
+```
+
+To use the Observer, provide it to the subscribe of an Observable:
+```bash
+observable.subscribe(observer);
+```
+
+```ts title="observer.ts"
+  const observer = {
+    next: (value: any) => console.log('Observer value: ' + value),
+    error: (err: any) => console.error('Observer error: ' + err),
+    complete: () => console.log('Observer is completed'),
+  };
+
+  const numbers$ = of(1, 2, 3); // create an Observable
+  numbers$.subscribe(observer);
+
+  // Output
+  // Observer value: 1
+  // Observer value: 2
+  // Observer value: 3
+  // Observer is completed
+```
