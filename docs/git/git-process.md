@@ -13,8 +13,9 @@ last_update:
 ---
 
 # Git Process
-
+:::info
 :sparkles: Process in your project when using git. :fire:
+:::
 
 ## Create feature branch
 

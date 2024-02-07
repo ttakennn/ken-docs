@@ -14,7 +14,9 @@ last_update:
 
 # Useful commands in GIT
 
+:::info
 :sparkles: The commands will help you use Git more easily in your project.
+:::
 
 ## Reset all commits
 
