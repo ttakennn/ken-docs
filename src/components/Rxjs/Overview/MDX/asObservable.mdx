@@ -1,0 +1,55 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+> The <Highlight>asObservable()</Highlight> operator can be used to transform a subject into an observable.
+This can be useful when we like to expose the data from the subject,
+but at the same time prevent new data pushed back into the subject.
+
+Create an <Highlight>asObservable</Highlight> method to prevent direct calls
+to the <Highlight>dataSource</Highlight> from components external to it.
+
+```ts title="data.service.ts"
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class DataService {
+  private dataSource = new BehaviorSubject({ id: 1, name: 'tta' });
+  public displayData$ = this.dataSource.asObservable();
+
+  constructor() {}
+
+  setData(data: any) {
+    this.dataSource.next(data);
+  }
+}
+```
+In your component, using <Highlight>DataService</Highlight> as below:
+
+```ts title="my.component.ts"
+export class MyComponent {
+  private subscription = new Subscription();
+  dataService = inject(DataService);
+
+  constructor() {
+    this.subscription.add(
+      this.dataService.displayData$.subscribe((data: any) =>
+        console.log(`TTA: ${JSON.stringify(data)}`),
+      ),
+    );
+  }
+
+  ngOnInit() {
+    this.dataService.setData({ id: 123, name: 'tta' });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+}
+
+```
+
+- An Observable is created by using <Highlight>asObservable()</Highlight>.
+
+- In Component Value is read from <Highlight>Observables()</Highlight> instead of <Highlight>Subjects</Highlight>.
