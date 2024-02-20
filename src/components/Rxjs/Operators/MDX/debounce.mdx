@@ -1,0 +1,38 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+:diamond_shape_with_a_dot_inside: The debounce operator is used to control the timing of emissions from an observable.
+It introduces a delay during which emissions are collected. After the delay, only the most recent value is emitted.
+:::
+
+```ts
+import { fromEvent, timer } from 'rxjs';
+import { debounce } from 'rxjs/operators';
+
+fromEvent(document.querySelector('.click'), 'click')
+  .pipe(debounce(() => timer(1000))) // Debounce for 1 second
+  .subscribe({
+    next: (e) => {
+      console.log('Logging after 1 second of inactivity', e);
+    },
+    complete: () => {
+      console.log('Completed');
+    },
+  });
+```
+
+In this example:
+
+- <Highlight>fromEvent(document.querySelector('.click'), 'click')</Highlight> creates an observable that captures click events.
+
+- The <Highlight>debounce(() => timer(1000))</Highlight> operator is applied to the observable. It introduces a 1-second delay, and only the most recent click event is emitted after 1 second of inactivity.
+
+**Where to Use the debounce Operator**
+
+The debounce operator can be effectively used in various scenarios, including:
+
+- **User Input Handling**: When you want to capture and process user input (e.g., typing or button clicks) only after a user has paused for a specific period.
+
+- **Event Handling**: In event-driven applications, it can be used to prevent rapid event handling and execute actions only after a period of inactivity. ie, search bar functionality.
+
+- **Real-time Data Filtering**: In real-time applications, it helps filter and process data based on inactivity periods , ensuring that only the most recent data is considered.

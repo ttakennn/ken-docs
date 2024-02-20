@@ -1,0 +1,89 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+:diamond_shape_with_a_dot_inside: The <Highlight>**distinctUntilChanged**</Highlight> operator is used to filter out values in an observable stream
+that are identical to the immediately preceding value. It ensures that only new and distinct values are propagated downstream,
+while repeated or redundant values are ignored.
+:::
+
+Let’s see a how to code, for this let’s implement search functionality that includes taking unique value and with some delay.
+
+```ts
+@Component({
+  standalone: true,
+  selector: 'app-rxjs-operators',
+  template: `
+    <h1>Rxjs Operators</h1>
+    <input #searchInput type="text" style="border: 1px solid gray" />
+    <div #searchResults></div>
+  `,
+})
+export class RxjsOperatorsComponent implements OnInit {
+  @ViewChild('searchInput', { static: true }) search!: ElementRef;
+  @ViewChild('searchResults', { static: true }) searchResults!: ElementRef;
+
+  ngOnInit() {
+    this.onDistinctUntilChanged();
+  }
+
+  // Simulated API function that fetches data based on a search query
+  searchAPI(query: any) {
+    // Simulated search results (replace with actual API call)
+    const results = ['apple', 'banana', 'cherry', 'date', 'fig', 'grape', 'trap'];
+
+    return of(results.filter((result) => result.includes(query)));
+  }
+
+  onDistinctUntilChanged() {
+    const input$ = fromEvent(this.search.nativeElement, 'input').pipe(
+      map((event: any) => event.target.value), // Extract the input value
+      debounceTime(500), // Debounce for 500ms to wait for user to finish typing
+      distinctUntilChanged(), // Ensure the search query has changed
+      filter((query) => query.length >= 3), // Only search for queries with at least 3 characters
+    );
+
+    input$
+      .pipe(
+        switchMap((query) => this.searchAPI(query)), // Call the search API with the query
+        tap((_) => (this.searchResults.nativeElement.innerHTML = '')), // Clear previous search results
+      )
+      .subscribe((results) => {
+        results.forEach((result) => {
+          const resultItem = document.createElement('div');
+          resultItem.innerText = result;
+          this.searchResults.nativeElement.appendChild(resultItem);
+        });
+      });
+  }
+
+}
+```
+
+- The <Highlight>debounceTime</Highlight> operator is used to introduce a time delay between events before they are emitted.
+In the example, it ensures that there is a 300ms pause in typing before considering the input value for a search query.
+This delay helps in avoiding rapid and frequent emissions, ensuring that the search query is only sent after a brief inactivity period.
+
+- For instance, if a user types quickly, the operator will wait for 300ms of inactivity before emitting the most recent value.
+This prevents unnecessary searches during rapid typing and optimizes the user experience.
+
+- The <Highlight>distinctUntilChanged</Highlight> operator ensures that the emitted value is distinct and different from the previous value.
+It is used in the example to filter out repeated values. In the context of search functionality, this operator ensures
+that a new search query is only triggered if it is different from the previous one.
+
+- For example, if a user deletes a character and retypes the same query, the operator prevents redundant searches by ignoring
+the repeated value. It’s particularly useful in scenarios where you want to avoid processing the same input multiple times and optimize
+performance.
+
+Here’s how these operators work together:
+
+- When a user types in the search input field, the <Highlight>input$</Highlight> observable captures the input value
+and applies <Highlight>debounceTime(300)</Highlight> to wait for a pause in typing.
+
+- <Highlight>distinctUntilChanged()</Highlight> ensures that only distinct search queries are considered.
+If a user rapidly types and deletes characters, the operator prevents redundant searches.
+
+- The <Highlight>filter</Highlight> operator then checks that the search query is at least 3 characters long.
+This avoids searches for very short or empty queries.
+
+These operators, used together, create a smooth and optimized search experience by waiting for a pause in typing and ensuring
+that only distinct, meaningful search queries are processed.

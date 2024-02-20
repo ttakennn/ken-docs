@@ -1,0 +1,43 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+:diamond_shape_with_a_dot_inside: The map operator in RxJS is used to apply a transformation function to each value emitted by a source observable.
+It allows you to change or manipulate the values in the observable stream, creating a new stream of transformed values
+:::
+
+```ts
+import { of, map } from 'rxjs';
+
+const numFlow = of(1, 2, 3, 6, 6).pipe(
+  map((x) => x * 10)
+);
+
+numFlow.subscribe(console.log);
+
+// Ouput
+// 10
+// 20
+// 30
+// 60
+// 60
+```
+
+In this code:
+
+- We import the necessary RxJS operators, including <Highlight>of</Highlight> and <Highlight>map</Highlight>.
+
+- An observable, <Highlight>numFlow</Highlight>, is created using the <Highlight>of</Highlight> operator to emit a sequence of values.
+
+- The <Highlight>map</Highlight> operator is applied to <Highlight>numFlow</Highlight>, which multiplies each value by 10.
+
+- We subscribe to the resulting observable, <Highlight>numFlow</Highlight>, and log the transformed values to the console.
+
+**Where Can We Use the <Highlight>map</Highlight> Operator?**
+
+The <Highlight>map</Highlight> operator can be applied in various scenarios, such as:
+
+- **Data Transformation**: When you need to change the format or structure of data, such as converting timestamps, parsing JSON, or formatting strings.
+
+- **Calculations**: When you need to perform mathematical operations on values, such as summing, averaging, or applying formulas.
+
+- **Custom Value Processing**: For any situation where you want to apply a custom function to each value in an observable, potentially for specific business logic or processing requirements.

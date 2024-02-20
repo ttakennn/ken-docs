@@ -1,0 +1,37 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+:diamond_shape_with_a_dot_inside: The <Highlight>**mergeMap**</Highlight> operator in RxJS is a powerful and commonly used operator for transforming the items emitted by an observable into other observables,
+and then flattening those observables into a single observable sequence. It's often referred to as a "flatMap" operator as well.
+:::
+
+Let’s explore using the mergeMap operator with the following code snippet:
+
+```ts
+const numFlow = of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).pipe(
+  mergeMap((x) => ajax(`https://jsonplaceholder.typicode.com/todos/${x}`), 2), // The '2' specifies the concurrency level
+);
+
+numFlow.subscribe((data) => console.log(data.response));
+
+// Output
+// {userId: 1, id: 2, title: 'quis ut nam facilis et officia qui', completed: false}
+// {userId: 1, id: 1, title: 'delectus aut autem', completed: false}
+//...
+// {userId: 1, id: 10, title: 'illo est ratione doloremque quia maiores aut', completed: true}
+```
+
+- The <Highlight>mergeMap</Highlight> operator is applied to numFlow. It takes each value emitted by the source observable and makes an HTTP request using the ajax function,
+fetching data from a remote API.
+
+- The concurrency level is set to 2, meaning that up to two HTTP requests can be in progress at the same time.
+
+**Where Can We Use the <Highlight>mergeMap</Highlight> Operator?**
+
+The <Highlight>mergeMap</Highlight> operator can be applied in various scenarios, such as:
+
+- **Concurrent HTTP Requests**: When you need to make multiple HTTP requests in parallel and merge the responses into a single stream.
+
+- **Parallel Processing**: For tasks like parallel data processing, data transformation, or parallel task execution.
+
+Understanding <Highlight>mergeMap</Highlight> is crucial for handling scenarios where you need to make asynchronous calls for each emitted item and merge the results into a single observable sequence.

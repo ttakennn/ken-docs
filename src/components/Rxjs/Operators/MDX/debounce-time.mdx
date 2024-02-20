@@ -1,0 +1,19 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+:diamond_shape_with_a_dot_inside: The debounceTime operator is used to introduce a time delay between emissions from the source observable.
+It only emits the most recent value after the specified time has passed since the last emission.
+:::
+
+```ts
+import { fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+const clicks = fromEvent(document, 'click');
+const result = clicks.pipe(debounceTime(1000)); // Debounce for 1 second
+
+result.subscribe((x) => console.log(x));
+```
+In <Highlight>debounce</Highlight> we pass inner observable inside of debounce operator.
+
+Here we directly pass the time.

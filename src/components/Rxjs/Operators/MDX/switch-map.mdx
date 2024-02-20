@@ -1,0 +1,165 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+:diamond_shape_with_a_dot_inside: The <Highlight>**switchMap**</Highlight> operator is a powerful tool in RxJS for managing and controlling inner observables.
+It's particularly useful when you need to switch from one inner observable to another based on the emissions of the source observable.
+This operator allows you to efficiently work with observables that represent asynchronous events or requests.
+:::
+
+**Generate new Observable according to source Observable values.**
+
+```ts
+import { of, switchMap } from 'rxjs';
+
+const switched = of(1, 2, 3).pipe(switchMap(x => of(x, x ** 2, x ** 3)));
+switched.subscribe(x => console.log(x));
+
+// outputs
+// 1
+// 1
+// 1
+// 2
+// 4
+// 8
+// 3
+// 9
+// 27
+```
+
+**Restart an interval Observable on every click event.**
+```ts
+import { fromEvent, switchMap, interval } from 'rxjs';
+
+const clicks = fromEvent(document, 'click');
+const result = clicks.pipe(switchMap(() => interval(1000)));
+result.subscribe(x => console.log(x));
+```
+
+**Search function using SwitchMap Operator.**
+
+Let’s explore using the mergeMap operator with the following code snippet:
+
+```ts title="DataService"
+export class DataService {
+  getData(filterText: string) {
+    const timertTime = Math.floor(Math.random() * 10000);
+    console.log(`SearchText: ${filterText},Time taken by API: ${timertTime} milliseconds`)
+    return timer(timertTime).pipe(
+      map((x) =>
+        [
+          { id: 1, text: 'Andhra Pradesh' },
+          { id: 2, text: 'Arunachal Pradesh' },
+          { id: 3, text: 'Assam' },
+          { id: 4, text: 'Bihar' },
+          { id: 5, text: 'Chhattisgarh' },
+          { id: 6, text: 'Goa' },
+          { id: 7, text: 'Gujarat' },
+          { id: 8, text: 'Haryana' },
+          { id: 9, text: 'Himachal Pradesh' },
+          { id: 10, text: 'Jharkhand' },
+          { id: 11, text: 'Karnataka' },
+          { id: 12, text: 'Kerala' },
+          { id: 13, text: 'Madhya Pradesh' },
+          { id: 14, text: 'Maharashtra' },
+          { id: 15, text: 'Manipur' },
+          { id: 16, text: 'Meghalaya' },
+          { id: 17, text: 'Mizoram' },
+          { id: 18, text: 'Nagaland' },
+          { id: 19, text: 'Odisha' },
+          { id: 20, text: 'Punjab' },
+          { id: 21, text: 'Rajasthan' },
+          { id: 22, text: 'Sikkim' },
+          { id: 23, text: 'Tamil Nadu' },
+          { id: 24, text: 'Telangana' },
+          { id: 25, text: 'Tripura' },
+          { id: 26, text: 'Uttarakhand' },
+          { id: 27, text: 'Uttar Pradesh' },
+          { id: 28, text: 'West Bengal' },
+        ].filter((state) =>
+          state.text
+            .toLocaleLowerCase()
+            .includes(filterText.toLocaleLowerCase())
+        )
+      )
+    );
+  }
+}
+```
+
+```ts title="AppComponent"
+@Component({
+  selector: 'my-app',
+  template: `
+    <input type="text" #search>
+    <div *ngFor="let state of States">{{state.text}}</div>
+  `,
+})
+export class AppComponent implements OnInit {
+  @ViewChild('search', { static: true }) search: ElementRef;
+  States: any[];
+  constructor(private dataService: DataService) {}
+
+  ngOnInit(): void {
+    fromEvent(this.search.nativeElement, 'input')
+      .pipe(
+        map((event: any) => event.target.value),
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap((searchText: string) => this.dataService.getData(searchText))
+      )
+      .subscribe((res) => {
+        this.States = res;
+        console.log(res);
+      });
+  }
+}
+```
+
+**switchMap**: previous stale request should be cancelled.
+
+**debounceTime**: It will only call when user don’t input for 500 milliseconds.
+
+**distinctUntilChanged**: In case we are using “keyup” or “keydown” events then when we press “shift key” the apis are called but in fact the string remains same.
+
+**Please see the <Highlight>TODO</Highlight> example as below:**
+
+```ts
+interval(1000)
+  .pipe(
+    filter((x) => x > 0),
+    switchMap((ix) => ajax(`https://jsonplaceholder.typicode.com/todos/${ix}`)),
+    map((data) => data),
+    take(5),
+  ).subscribe((data) => console.log(data.response));
+
+// Output
+// {userId: 1, id: 1, title: 'delectus aut autem', completed: false}
+// {userId: 1, id: 2, title: 'quis ut nam facilis et officia qui', completed: false}
+// {userId: 1, id: 3, title: 'fugiat veniam minus', completed: false}
+// {userId: 1, id: 4, title: 'et porro tempora', completed: true}
+// {userId: 1, id: 5, title: 'laboriosam mollitia et enim quasi adipisci quia provident illum', completed: false}
+```
+
+In this code:
+
+- We import necessary RxJS operators and the ajax function from rxjs/ajax.
+
+- We create an observable using interval(1000) that emits sequential integers every second. This serves as a timer for making periodic HTTP requests.
+
+- The switchMap operator is used to switch to a new inner observable for each emitted value. In this case, it sends an HTTP request to the JSONPlaceholder API to fetch data based on the emitted value (ix), which represents the current interval value.
+
+- The take(5) operator ensures that only the first 5 HTTP requests are considered.
+
+- We subscribe to the observable and log the response data from the HTTP requests to the console.
+
+**Where to Use the switchMap Operator**
+
+The switchMap operator is particularly useful in various scenarios, including:
+
+- HTTP Requests: When you need to fetch data from a server and want to ensure that only the latest request is active.
+
+- User Input Handling: In situations where you want to handle user interactions, such as typeahead search suggestions or autocomplete functionality.
+
+- Event Handling: For handling events where you want to switch to a different event stream when a specific trigger occurs.
+
+- Real-time Applications: In applications that involve real-time data updates, ensuring that only the most recent data is considered.

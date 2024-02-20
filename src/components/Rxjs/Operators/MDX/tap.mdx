@@ -1,0 +1,76 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+:diamond_shape_with_a_dot_inside: Used to perform side-effects for notifications from the source observable
+:::
+
+**Debugging by logging what is going on in a data stream.**
+
+<Highlight>tap</Highlight> can be used to spy on a stream without changing the behavior of said stream.
+
+```ts {3,5}
+observable.pipe(
+  map(post => post.email),
+  tap(console.log),
+  filter(email => email.startsWith("A")),
+  tap(data => console.log(data))
+)
+```
+
+In the above example, <Highlight>tap</Highlight> operators log the data “as-is” in the console,
+which is a perfect way to make sure that the data is filtered and transformed as expected along the way.
+
+**Define side effects as data changes**
+
+Let’s take the example of a LoginService that has a login method.
+The login method makes an HTTP request to receive an authentication token from a server.
+If we need to store the current user name and token in that service,
+it would be tempting to subscribe to the HTTP request’s Observable,
+but that would prevent us from starting the subscriptionfrom the calling code.
+
+Here is how to use <Highlight>tap</Highlight> to prevent subscribing too early:
+
+```ts {4-8}
+login(username, password): Observable<string> {
+  return this.http.put('http://server.com/login', {username, password})
+    .pipe(
+      tap(data => {
+        this.currentUser = username;
+        this.isLoggedIn = true;
+        this.authToken = data['token'];
+      }),
+      map(tokenObj => tokenObj['token'])
+    );
+}
+```
+
+In this example, the login method returns an Observable, doesn’t subscribe, and still manages to register a side-effect with
+tap that will catch any username/token change to update its internal state.
+
+**Watch for completion of inner observables**
+
+<Highlight>tap</Highlight> can be convenient to listen to completion in an inner Observable as well.
+This can be achieved with the following syntax:
+
+```ts {5-7}
+observable.pipe(
+ concatMap(n => otherObservable.pipe(
+   take(Math.round(Math.random() * 10)),
+   map((data) => data.done),
+   tap({
+     complete: () => console.log(`Done with ${n}`)
+   })
+ ))
+)
+```
+
+Note that you can register the usual three callbacks in the tap operator using that syntax.
+However, all three properties/callbacks are optional:
+
+```ts
+tap({
+    next: (data) => // This will run when data is received,
+    complete: () => // This will run on Observable completion,
+    error: (error) => // This will run on Observable error,
+})
+```
