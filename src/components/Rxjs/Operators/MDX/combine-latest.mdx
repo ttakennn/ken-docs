@@ -1,0 +1,65 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+The combineLatest operator in RxJS is a powerful tool for combining multiple observables into a single observable
+that emits an array or an object containing the values from each of the source observables.
+It is a versatile operator that can help you in various scenarios where you need to synchronize data from multiple sources.
+:::
+
+Key characteristics of the combineLatest operator include:
+
+- **Combining Multiple Observables**: It allows you to combine two or more observables into one.
+
+- **Latest Values**: It emits an array or object containing the latest values from each of the source observables whenever any of the source observables emit a new value.
+
+- **Waiting for All Sources**: It waits until all source observables have emitted at least one value before producing its first combined output.
+
+```ts
+  const firstTimer = timer(0); // emit 0, 1, 2... after every second, starting from now
+  const secondTimer = timer(3000); // emit 0, 1, 2... after every second, starting 0,5s from now
+
+  firstTimer.subscribe((x) => console.log(x));
+
+  const combinedTimers = combineLatest({ firstTimer, secondTimer });
+  combinedTimers.subscribe((value) => console.log(value));
+
+  // Output
+  // {firstTimer: 0, secondTimer: 0}
+```
+
+In this code:
+
+- We import the necessary RxJS operators, including <Highlight>timer</Highlight> and <Highlight>combineLatest</Highlight>.
+
+- Two timers are created using the <Highlight>timer</Highlight> operator. The first timer emits values immediately,
+while the second timer starts emitting values after a 3-second delay.
+
+- The <Highlight>combineLatest</Highlight> operator combines both timers into a single observable, <Highlight>combinedTimers</Highlight>.
+It waits for both timers to emit values before producing the first combined output.
+
+- We subscribe to <Highlight>combinedTimers</Highlight>, which logs the combined array of the latest values from both timers.
+
+
+**Use map operator to dynamically calculate the Body-Mass Index.**
+
+```ts
+  const weight = of(1, 2, 5);
+  const height = of(3, 4, 7);
+  const bmi = combineLatest([weight, height]).pipe(map(([w, h]) => w * h));
+  bmi.subscribe((x) => console.log('BMI is ' + x));
+
+  // Output
+  // BMI is 15 -> 5 * 3
+  // BMI is 20 -> 5 * 4
+  // BMI is 35 -> 5 * 7
+```
+
+**Where Can We Use the combineLatest Operator?**
+
+The combineLatest operator can be immensely useful in various scenarios, such as:
+
+- **Form Validation**: When you have multiple form fields and want to validate them collectively,
+combineLatest can help by emitting the latest values from all fields whenever any of them changes.
+
+- **Real-time Dashboards**: In applications that display real-time data from multiple sources,
+you can use combineLatest to keep the dashboard up to date with the latest data.

@@ -1,0 +1,55 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+The <Highlight>**concat**</Highlight> operator in RxJS is used to combine multiple observables into a single observable
+that emits their values sequentially, one after the other. It ensures that the observables are processed in the order you specify.
+When one observable completes, the next one in line begins emitting its values.
+:::
+
+Key features of the <Highlight>concat</Highlight> operator include:
+
+- **Sequential Execution**: It maintains a strict order of execution, so it only subscribes to the next observable when the current one has completed.
+
+- **Preserving Completeness**: It guarantees that all values from the first observable are emitted before moving on to the next one.
+
+- **Avoiding Memory Leaks**: It helps prevent memory leaks by ensuring that observables are properly completed.
+
+```ts
+  const timer1 = interval(1000).pipe(take(3)); // Emits 0, 1, 2 every second, limited to 3 emissions
+  const timer2 = interval(2000).pipe(take(2)); // Emits 0, 1 every 2 seconds, limited to 2 emissions
+  const timer3 = interval(5000).pipe(take(5)); // Emits 0, 1 every 2 seconds, limited to 5 emissions
+
+  const result = concat(timer1, timer2, timer3);
+
+  result.subscribe((x) => console.log(x));
+
+  // Output
+  // 1st - run the timer1
+  // 0 - after 1s
+  // 1 - after 1s
+  // 3 - after 1s -> DONE. it's only take 3 numbers.
+
+  // 2nd - run the timer2
+  // 0 - after 2s
+  // 1 - after 2s -> DONE. it's only take 2 numbers.
+
+  // 3rd - run the timer3
+  // 0 - after 5s
+  // 1 - after 5s
+  // 2 - after 5s
+  // 3 - after 5s
+  // 4 - after 5s -> DONE. it's only take 5 numbers.
+```
+
+**Where Can We Use the <Highlight>concat</Highlight> Operator?**
+
+The concat operator can be applied in various scenarios, such as:
+
+- Sequential API Requests: When you need to make a series of HTTP requests, you can use <Highlight>concat</Highlight>
+to ensure that they are executed one after another, maintaining order and preventing race conditions.
+
+- Resource Cleanup: In applications that involve resource management, such as opening and closing files or connections,
+<Highlight>concat</Highlight> helps ensure that resources are released in the correct order.
+
+- Complex Workflows: When you have multi-step workflows, <Highlight>concat</Highlight> can be used to
+ensure that each step is executed sequentially, making it easier to reason about your code.

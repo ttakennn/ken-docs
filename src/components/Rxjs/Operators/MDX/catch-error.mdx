@@ -1,0 +1,28 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+The <Highlight>catchError</Highlight> operator will pass through all value and complete events from the source observable.
+Only when an error is emitted the operator will return a Replacement Observable.
+:::
+
+```ts
+  const http$ = this.http.get('https://jsonplaceholder.typicode.com/users/50');
+  http$
+    .pipe(
+      catchError((err) => {
+        return throwError(() => {
+          return err?.message || 'unknown error';
+        });
+      }),
+      finalize(() => console.log('finalize')),
+    )
+    .subscribe({
+      next: (res) => console.log('Response', res),
+      error: (err) => console.log('Error', err),
+      complete: () => console.log('Completed'),
+    });
+
+  // Output
+  // Error Http failure response for https://jsonplaceholder.typicode.com/users/50: 404 OK
+  // finalize
+```

@@ -1,0 +1,87 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+The <Highlight>concatMap</Highlight> operator in RxJS is used to sequentially process values from a source observable and map them to a new observable.
+It ensures that the observables created from each source value are executed one after the other, in a specific order.
+It waits for the current inner observable to complete before moving on to the next one.
+:::
+
+Key features of the <Highlight>concatMap</Highlight> operator include:
+
+- **Sequential Execution**: It processes values emitted by the source observable in order, one at a time.
+
+- **Ordered Output**: The output values are ordered according to the order in which the inner observables complete.
+
+- **Useful for APIs and Promises**: It is particularly useful when working with APIs, promises, or any situation where order of execution is crucial.
+
+Let’s explore using the concatMap operator with the following code snippet:
+```ts
+  const getData = (args: any) => {
+    return of(args + ' cat').pipe(delay(3000));
+  };
+
+  const stream = from(['abc', 'def', 'ghi']);
+  stream.pipe(concatMap((res) => getData(res))).subscribe(console.log);
+
+  // Output
+  // abc cat -> delay 3secs
+  // def cat -> delay 3secs
+  // ghi cat -> delay 3secs
+```
+
+- The <Highlight>concatMap</Highlight> operator is used to process the values from stream.
+It maps each value to the <Highlight>getData</Highlight> function, which returns an inner observable that emits a value after a 3-second delay.
+
+- We subscribe to the resulting observable and log the values to the console.
+The values are emitted sequentially, with each inner observable completing before the next one starts.
+
+**Map values to inner observable, subscribe and emit in order.**
+
+```ts title="example 1"
+  const source = of('Hello', 'Goodbye');
+  const examplePromise = (val: any) => new Promise((resolve) => resolve(`${val} World!`));
+  const example$ = source.pipe(concatMap((val) => examplePromise(val)));
+  const subscribe = example$.subscribe((val) => console.log('Example Selector:', val));
+
+  // Output
+  // Example Selector: Hello World!
+  // Example Selector: Goodbye World!
+```
+
+<Highlight>concatMap</Highlight> does not subscribe to the next observable until the previous completes.
+
+```ts title="example 2"
+ handleAPI() {
+    this.http.get('api-userInfo')
+    .pipe(
+      tap(user => {
+        console.log('1st res', user);
+      }),
+      concatMap(res => this.http.get('api-language')),
+      tap(language => {
+        console.log('2nd res', language);
+        this.setLanguageTranslator(language);
+      }),
+      concatMap(res => this.http.get('api-theme')),
+      tap(theme => {
+        console.log('3rd res', theme);
+        this.changeTheme(theme);
+      })
+    ).subscribe((res) => {
+      console.log('Final res => ', res)
+    });
+ }
+
+ // Output
+ // 1st res
+ // 2nd res
+ // 3rd res
+ // Final res
+```
+
+**Where Can We Use the <Highlight>concatMap </Highlight> Operator?**
+
+- **API Requests**: When you need to make a sequence of API requests where the order of execution is crucial,
+<Highlight>concatMap</Highlight> ensures they are executed sequentially.
+
+- **Promise Handling**: In situations where you are working with a sequence of promises and want to ensure that they are resolved one at a time.

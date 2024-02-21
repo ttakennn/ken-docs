@@ -1,0 +1,149 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+The <Highlight>**forkJoin**</Highlight> operator in RxJS is designed to work with multiple observables or promises and combine their results a latest value.
+:::
+
+Key features of the <Highlight>forkJoin</Highlight> operator include:
+
+- **Combining Results**: It combines the results from multiple sources, such as observables and promises, into a single data structure.
+
+- **Synchronization**: It waits for all source observables or promises to complete before emitting a value, ensuring you have access to the complete set of results.
+
+- **Error Handling**: If any source observable or promise encounters an error, the entire forkJoin operation is canceled, and the error is propagated.
+
+Let’s explore using the forkJoin operator with the following code snippet:
+
+```ts
+import { forkJoin, of, timer } from 'rxjs';
+
+const observable = forkJoin({
+  foo: of(1, 2, 3, 4), // An observable emitting an array of values
+  bar: Promise.resolve(8), // A promise resolving to a single value
+  baz: timer(3000), // An observable that emits a value after 3 seconds
+  hek: [of(1, 2, 3), 5], // An array of an observable and a single value
+});
+
+observable.subscribe({
+  next: (value) => console.log(value),
+  complete: () => console.log('This is how it ends!'),
+});
+
+// Outputs
+// { foo:4, bar:8, baz:0, hek: 5 }
+```
+
+- The forkJoin operator combines the results of all the sources specified in the object.
+It waits for all of them to complete before emitting the results.
+
+- We subscribe to the observable produced by forkJoin and log the combined results to the console.
+The complete callback is triggered once all the sources have completed.
+
+
+**Prevent loss of data in forkJoin operator when few of the multiple inner observables fail**
+
+```ts title="data-service.ts"
+import { inject } from '@angular/core';
+import { catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+
+export class DataService {
+  http = inject(HttpClient);
+
+  getUser(id: number) {
+    return this.http.get(`https://jsonplaceholder.typicode.com/users/${id}`).pipe(
+      catchError((err) => {
+        throw Error(err?.message || err);
+      }),
+    );
+  }
+}
+```
+We have subscribed to 2 observables : errorObservable$ and data$ to display the errors and user data respectively.
+
+```ts title="AppComponent"
+@Component({
+  template: `
+    <h1>Rxjs Operators</h1>
+    <input #searchInput type="text" style="border: 1px solid gray" />
+    <div #searchResults></div>
+
+    <button (click)="onForkJoin()" mat-button color="primary">Fetch Data</button>
+    <ng-container *ngIf="errorObservable$ | async as errorList">
+      <h4>Errors</h4>
+      <div *ngFor="let error of errorList">
+        <label style="color:red;">{{ error }}</label>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="data$ | async as userData">
+      <h4>Data</h4>
+      <div *ngFor="let user of userData">
+        <label style="color:blue" *ngIf="user">{{ user.id }} {{ user.name }}</label>
+      </div>
+    </ng-container>
+  `,
+})
+export class AppComponent {
+  dataService = inject(DataService);
+
+  data$!: Observable<any>;
+  private error$ = new Subject<any>();
+  public errorObservable$ = this.error$
+    .asObservable()
+    .pipe(scan((acc, curr) => (acc = acc.concat(curr)), []));
+
+  onForkJoin() {
+    this.data$ = forkJoin({
+      first: this.dataService.getUser(1).pipe(this.handleRequest().bind(this)),
+      fifty: this.dataService.getUser(50).pipe(this.handleRequest().bind(this)),
+      seven: this.dataService.getUser(7).pipe(this.handleRequest().bind(this)),
+      nine: this.dataService.getUser(9).pipe(this.handleRequest().bind(this)),
+      eleven: this.dataService.getUser(11).pipe(this.handleRequest().bind(this)),
+    }).pipe(
+      map((result) => {
+        console.log('Final Object', result);
+        return Object.values(result);
+      }),
+    );
+  }
+
+  handleRequest() {
+    return (observable: Observable<any>) => {
+      return observable.pipe(
+        map((result) => {
+          console.log('Each User Data Object', result);
+          return result;
+        }),
+        catchError((err: any) => {
+          this.error$.next(err);
+          return of(null);
+        }),
+      );
+    };
+  }
+}
+```
+
+```bash title="Output"
+Errors
+
+Error: Http failure response for https://jsonplaceholder.typicode.com/users/50: 404 OK
+Error: Http failure response for https://jsonplaceholder.typicode.com/users/11: 404 OK
+
+Data
+
+1 Leanne Graham
+7 Kurtis Weissnat
+9 Glenna Reichert
+```
+
+
+**Where Can We Use the <Highlight>forkJoin</Highlight> Operator?**
+
+The <Highlight>forkJoin</Highlight> operator can be applied in a wide range of scenarios, such as:
+
+- **Data Aggregation**: When you need to fetch data from multiple sources and combine them into a single structure for rendering, forkJoin can help.
+
+- **Parallel API Requests**: When your application needs to make multiple API requests concurrently
+and then process the results together, forkJoin is a valuable tool.
