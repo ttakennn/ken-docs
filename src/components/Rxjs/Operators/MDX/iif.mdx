@@ -1,0 +1,33 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+<Highlight>**iif**</Highlight> Operator is one of the creation operators.
+Iff operator conditionally selects which observable to subscribe to based on the boolean value.
+iff operator takes three arguments, the first is a function returning a value resulting in a boolean,
+the second is an observable and the third is observable.
+:::
+
+- If the condition is satisfying true it subscribes first observable. If it is false takes second observable to subscribe.
+
+```ts
+  import { iif, of } from 'rxjs';
+
+  let subscribeToFirst: boolean = false;
+
+  const firstOrSecond = iif(
+   () => subscribeToFirst,  of('first'),  of('second')
+  );
+
+  firstOrSecond.subscribe(value => console.log(value));
+
+  subscribeToFirst = true;
+  firstOrSecond.subscribe(value => console.log(value));
+
+  // Output
+  // second -> subscribeToFirst is false
+  // first  -> subscribeToFirst is true
+```
+
+**When to use “iff” Operator?**
+
+While decision making which observable to subscribe, we use iff operator.

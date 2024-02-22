@@ -24,6 +24,11 @@ import CombineLatest from '@site/src/components/Rxjs/Operators/MDX/combine-lates
 import Concat from '@site/src/components/Rxjs/Operators/MDX/concat.mdx';
 import ConcatMap from '@site/src/components/Rxjs/Operators/MDX/concat-map.mdx';
 import ForkJoin from '@site/src/components/Rxjs/Operators/MDX/fork-join.mdx';
+import Partition from '@site/src/components/Rxjs/Operators/MDX/partition.mdx';
+import GroupBy from '@site/src/components/Rxjs/Operators/MDX/group-by.mdx';
+import Race from '@site/src/components/Rxjs/Operators/MDX/race.mdx';
+import ExhaustMap from '@site/src/components/Rxjs/Operators/MDX/exhaust-map.mdx';
+import Iif from '@site/src/components/Rxjs/Operators/MDX/iif.mdx';
 import CatchError from '@site/src/components/Rxjs/Operators/MDX/catch-error.mdx';
 
 :::info
@@ -67,6 +72,21 @@ Operators are the essential pieces that allow complex asynchronous code to be ea
 ## distinctUntilChanged
 <DistinctUntilChanged />
 
+## partition
+<Partition />
+
+## groupBy
+<GroupBy />
+
+## race
+<Race />
+
+## exhaustMap
+<ExhaustMap />
+
+## iif
+<Iif />
+
 ## catchError
 <CatchError />
 
@@ -74,17 +94,13 @@ Operators are the essential pieces that allow complex asynchronous code to be ea
 
 ## References :eight_pointed_black_star:
 
+:point_right: https://medium.com/@yuvidev/rxjs-operators-section-c965d3690dd4
+
+:point_right: https://rxjs.dev/api
+
 :point_right: https://medium.com/@nkchandupatla/rxjs-most-commonly-used-operators-b987e526ceb6
 
-:point_right: https://rxjs.dev/api/operators/switchMap
-
 :point_right: https://blog.bitsrc.io/rxjs-switchmap-operator-4b045e2fbbda
-
-:point_right: https://medium.com/@yuvidev/rxjs-operator-25-switchmap-operator-6745f019c877
-
-:point_right: https://rxjs.dev/api/index/function/mergeMap
-
-:point_right: https://medium.com/@yuvidev/rxjs-operator-22-mergemap-operator-e387d3a4b6c3
 
 :point_right: https://medium.com/@Evelyn.Taylor/deep-dive-into-the-rxjs-mergemap-operator-how-does-it-work-0f6cd0d188ce
 
@@ -92,17 +108,7 @@ Operators are the essential pieces that allow complex asynchronous code to be ea
 
 :point_right: https://medium.com/@gurunadhpukkalla/angular-rxjs-operators-filter-take-debounce-debouncetime-8ff504e8cd6
 
-:point_right: https://medium.com/@yuvidev/rxjs-operator-28-debounce-operator-a8aa3c6d08a4
-
-:point_right: https://medium.com/@yuvidev/rxjs-operator-29-debouncetime-operator-081e17f4f632
-
-:point_right: https://medium.com/@yuvidev/rxjs-operator-10-combinelatest-operator-a7888daeb75e
-
-:point_right: https://medium.com/@yuvidev/rxjs-operator-17-concatmap-operator-78db3e1bafe3
-
 :point_right: https://medium.com/@piyalidas.it/concatmap-operator-of-rxjs-d56845e5f006
-
-:point_right: https://medium.com/@yuvidev/rxjs-operator-11-forkjoin-operator-7d4a4066b5b7
 
 :point_right: https://medium.com/geekculture/angular-prevent-loss-of-data-in-forkjoin-operator-when-few-of-the-multiple-inner-observables-fail-c38225a1adf1
 

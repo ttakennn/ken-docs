@@ -1,0 +1,45 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+The <Highlight>**partition**</Highlight> operator in RxJS is used to divide a source observable into two separate observables: one
+for values that meet a specified condition and another for values that do not.
+This allows you to segregate and process the data streams according to your criteria.
+:::
+
+Key features of the <Highlight>partition</Highlight> operator include:
+
+- **Conditional Splitting**: It allows you to define a condition based on which the source observable is divided.
+
+- **Two Resulting Observables**: It produces two new observables, one containing values that satisfy the condition and another for those that don’t.
+
+- **Efficient Segmentation**: It doesn't duplicate the source observable but efficiently shares it between the two resulting observables.
+
+```ts
+  const observableValues = of(1, 2, 3, 4, 5, 6);
+  // Use the `partition` operator to split the observable into evens and odds
+  const [evens$, odds$] = partition(observableValues, (value) => value % 2 === 0);
+
+  // Subscribe to the "odds" observable
+  odds$.subscribe((x) => console.log('odds', x));
+
+  // Subscribe to the "evens" observable
+  evens$.subscribe((x) => console.log('evens', x));
+
+  // Output
+  // odds 1
+  // odds 3
+  // odds 5
+  // evens 2
+  // evens 4
+  // evens 6
+```
+
+**Where Can We Use the <Highlight>partition</Highlight> Operator?**
+
+The <Highlight>partition</Highlight> operator can be applied in various scenarios, such as:
+
+- Data Filtering: When you need to filter data based on a specific criterion, <Highlight>partition</Highlight> allows you to split data into two streams,
+making it easier to work with the filtered and unfiltered data separately.
+
+- Conditional Processing: In scenarios where you need to perform different actions on data depending on specific conditions,
+<Highlight>partition</Highlight> makes it easy to segregate the data streams for each condition.

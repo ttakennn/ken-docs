@@ -1,0 +1,52 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+The <Highlight>race</Highlight> operator in RxJS is designed to compete multiple observables against each other and emit the value from the first observable that emits a result.
+It essentially races the observables and triggers the callback as soon as one observable produces an output.
+:::
+
+Key features of the <Highlight>race</Highlight> operator include:
+
+- **Fastest Emission Wins**: It waits for the first observable to emit and then immediately emits its value, ignoring all other observables.
+
+- **Cancellation**: It automatically unsubscribes from the other observables once a winner is determined, avoiding unnecessary processing.
+
+- **Useful for Timeouts and Latency**: It is particularly useful when you want to set a timeout or determine which source responds first.
+
+```ts
+  const source1$ = interval(1000).pipe(map(() => 'slow one'));
+  const source2$ = interval(500).pipe(map(() => 'fast one'));
+  const source3$ = interval(3000).pipe(map(() => 'medium one'));
+  const race$ = race([source1$, source2$, source3$]);
+
+  // Will subscribe to the fastest item from list race
+  race$.pipe(take(4)).subscribe({
+    next: (resp) => console.log(`Value: ${resp}`),
+    error: (err) => console.log(err),
+    complete: () => console.log('complete'),
+  });
+
+  // Output
+  // Value: fast one
+  // Value: fast one
+  // Value: fast one
+  // Value: fast one
+  // complete
+```
+
+- Three observables, <Highlight>obs1</Highlight>, <Highlight>obs2</Highlight>, and <Highlight>obs3</Highlight>,
+are created using the interval operator to emit values at different intervals.
+The <Highlight>take(1)</Highlight> operator ensures that each observable completes after emitting just one value.
+
+- The <Highlight>race</Highlight> operator is used to compete these observables. It subscribes to all of them but only emits the value from the first observable that produces a result. In this case, obs1 emits its value the fastest.
+
+- We subscribe to the result of the <Highlight>race</Highlight> operator and log the winner's value to the console.
+
+**Where Can We Use the <Highlight>race</Highlight> Operator?**
+
+The <Highlight>race</Highlight> operator can be applied in various scenarios, such as:
+
+- **Timeout Handling**: When you want to set a timeout for an operation and take action based on whether it completes within a specified time frame.
+
+- **Cancellation Logic**: In scenarios where you need to implement cancellation mechanisms based on the fastest completion.
+

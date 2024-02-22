@@ -1,0 +1,67 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+:::info
+The <Highlight>exhaustMap</Highlight> operator in RxJS is used to handle observables emitted by a source observable.
+It ensures that new observables are ignored until the current inner observable completes.
+This is useful in scenarios where you want to prevent concurrent requests or operations
+and ensure that one inner observable is fully processed before moving on to the next.
+:::
+
+Key features of the <Highlight>exhaustMap</Highlight> operator include:
+
+- **Sequential Execution**: It processes the inner observables sequentially, ignoring new observables until the current one is completed.
+
+- **Preventing Concurrent Requests**: It is particularly useful when dealing with HTTP requests or other operations where you want to ensure that one request is fully processed before making another.
+
+```ts
+import { fromEvent, of, exhaustMap, tap, interval, take, filter } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
+
+interval(1000)
+  .pipe(
+    filter(x => x > 0),
+    tap(console.log),
+    exhaustMap((id) => {
+      return ajax(`https://jsonplaceholder.typicode.com/todos/${id}`);
+    }),
+    take(5)
+  )
+  .subscribe((data) => {
+    console.log(data.response['id'], "This is the response");
+  });
+
+  // Output
+  // 1
+  // 2
+  // 1 This is the response
+  // 3
+  // 3 This is the response
+  // 4
+  // 5
+  // 4 This is the response
+  // 6
+  // 7
+  // 6 This is the response
+  // 8
+  // 9
+  // 8 This is the response
+
+  // When firstly it will take the value from source observable, and for the next set of streams will be ignored, untill the first one is completed. After completing it will take the next observable.
+  // You can see the id is 2, 5, 7, 9 are ignored.
+```
+
+- The <Highlight>exhaustMap</Highlight> operator is applied to process the inner observables created by the ajax function, which makes HTTP requests to a remote API.
+
+- The <Highlight>take(5)</Highlight> operator ensures that only the first five responses are processed.
+
+- We subscribe to the resulting observable and log the responses to the console.
+The <Highlight>exhaustMap</Highlight> operator ensures that new observables are ignored until the current inner observable completes.
+
+The <Highlight>exhaustMap</Highlight> operator can be applied in various scenarios, such as:
+
+- **HTTP Requests**: When you need to make HTTP requests to a server and want to ensure that each request is fully processed before making another.
+
+- **User Input Handling**: In user interfaces, it can be used to handle button clicks or other events, preventing multiple clicks from triggering concurrent actions.
+
+- **Resource Management**: When you want to ensure that a resource, such as a database connection or file write operation, is used one at a time to prevent conflicts.
+
