@@ -1,0 +1,141 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+**Primitive Types**
+
+:left_speech_bubble: **Javascript**
+- When comparing with ==, Javascript will convert to a number for comparison.
+- With 3 ===, it keeps the original value for comparison.
+
+```js
+2 == '2'; // true
+false == 0; // true
+
+2 === '2'; // false
+false === '0'; // false
+```
+
+:left_speech_bubble: **Typescript**
+- Always check the data type.
+
+```ts
+2 == '2'
+2 === '2'
+
+// This comparison appears to be unintentional because the types 'number' and 'string' have no overlap.ts(2367
+```
+
+**Object Types**
+- Objects, arrays, and functions are reference types.
+- When comparing two references, the address of the reference is compared, not the actual value.
+
+```ts
+const userA = {
+  id: 1,
+  name: 'TTA'
+};
+
+const userB = userA;
+
+userA === userA; // true
+userA === { id: 1, name: 'TTA' }; // false
+
+// This condition will always return 'false' since JavaScript compares objects by reference, not value.ts(2839)
+```
+
+Another example is when they assign <Highlight>userB</Highlight> to <Highlight>userA</Highlight>. Then they change the name of userB.
+You can see that when <Highlight>userB</Highlight> changes the name, <Highlight>userA</Highlight> also updates accordingly.
+This is because <Highlight>userA</Highlight> and <Highlight>userB</Highlight> currently **share the same reference**.
+
+```ts
+const userA = {
+  id: 1,
+  name: "userA",
+};
+
+const userB = userA;
+userB.name = "userB";
+
+console.log(userA); // {id: 1, name: 'userB'}
+console.log(userB); // {id: 1, name: 'userB' }
+```
+
+We will use the <Highlight>structuredClone</Highlight> in JS 2022 to deep clone the Object.
+Please see the example as below:
+
+```ts
+const userA = {
+  name: "Misoo",
+  user: {
+    name: "Thai",
+  },
+};
+
+const userB = structuredClone(userA);
+userB.name = "Azure";
+userB.user.name = "Do";
+
+console.log(JSON.stringify(userA)); // {"name":"Misoo","user":{"name":"Thai"}}
+console.log(JSON.stringify(userB)); // {"name":"Azure","user":{"name":"Do"}}
+```
+
+**Null vs Undefined**
+
+<Highlight>Null</Highlight> means an empty or non-existent value. Null is assigned, and explicitly means nothing.
+
+<Highlight>Undefined</Highlight> means a variable has been declared, but the value of that variable has not yet been defined.
+
+- null is an assigned value. It means nothing.
+
+- undefined means a variable has been declared but not defined yet.
+
+- null is an object, undefined is of type undefined.
+
+- null !== undefined but null == undefined.
+
+```ts
+null == undefined; // true
+null === undefined; // false
+null == 0; // false
+null >= 0; // true, null is generated to 0 and then comparing with 0 number.
+```
+
+**Json**
+
+<Highlight>undefined</Highlight> is removed from JSON, it will return `{ "id": null }`
+
+```bash
+JSON.stringify({
+  id: null,
+  name: undefined,
+})
+```
+
+**Const vs Let**
+
+<Highlight>const</Highlight> is a signal that the identifier won’t be reassigned.
+
+```ts title="constant"
+const API_URL = 'https://api.com'
+const HTTP_OK = 200;
+```
+
+```ts title="components"
+const userName = "Obama";
+const userAge = 20;
+const isActive = true;
+
+const student = {};
+student.name = 'Misoo Do';
+
+const userList = [];
+userList.push('Pom');
+```
+
+<Highlight>let</Highlight> is a signal that the variable may be reassigned, such as a counter in a loop, or a value swap in an algorithm.
+It also signals that the variable will be used only in the block it’s defined in, which is not always the entire containing function.
+
+```ts
+for (let i = 0; i < 10; i++) {
+  console.log(i);
+}
+```

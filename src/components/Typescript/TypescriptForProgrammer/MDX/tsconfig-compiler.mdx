@@ -1,0 +1,51 @@
+We will talke about some configs in `tsconfig.json` file.
+
+**outDir**
+
+```bash
+{
+  "compilerOptions": {
+    ...
+    "outDir": "./dist",
+  }
+}
+```
+When you run `tsc` command line, it will generate all `ts` to `js` file in dist folder.
+
+**noEmitOnError**
+
+```bash
+{
+  "compilerOptions": {
+    ...
+    "noEmitOnError": "true",
+  }
+}
+```
+
+It only generates `js` files from `ts` files when all `ts` files are error-free. The toggle is set to `false`, so it will ignore any errors.
+
+**strict**
+
+
+```bash
+{
+  "compilerOptions": {
+    ...
+    "strict": "true",
+
+    /*
+      It means all options below will be enabled, set to true.
+
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "strictFunctionTypes": true,
+      "strictBindCallApply": true,
+      "strictPropertyInitialization": true,
+      "noImplicitThis": true,
+      "useUnknownInCatchVariables": true,
+      "alwaysStrict": true,
+    */
+  }
+}
+```

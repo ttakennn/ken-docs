@@ -1,0 +1,38 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+The ES2020 introduced a new operator, the <Highlight>Nullish Coalescing</Highlight>, also known as the Elvis operator.
+
+```js
+const possiblyNull = null;
+const result = possiblyNull ?? 'Default Value';
+console.log(result); // 'Default Value'
+
+const possiblyUndefined = undefined;
+const result = possiblyUndefined ?? 'Default Value';
+console.log(result); // 'Default Value'
+```
+
+It works similarly to the `||` operator. However, while `||` applies to all **falsy values**,
+the <Highlight>Nullish Coalescing</Highlight> operator is limited to only `null` and `undefined` values.
+
+**Nullish coalescing assignment**
+
+The nullish coalescing assignment (??=) operator, also known as the logical nullish assignment operator,
+only evaluates the right operand and assigns to the left if the left operand is nullish (null or undefined).
+
+```ts
+interface Example {
+  duration: number;
+  speed: number;
+}
+
+const a: Partial<Example> = { duration: 15 };
+a.duration ??= 10;
+console.log(a.duration); // Output: 50
+
+a.speed ??= 25;
+console.log(a.speed); // Output: 25
+```
+
+Nullish coalescing assignment short-circuits,
+meaning that `x ??= y` is equivalent to `x ?? (x = y)`, except that the expression `x` is only evaluated once.

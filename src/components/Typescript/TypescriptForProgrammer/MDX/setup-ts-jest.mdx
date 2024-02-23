@@ -1,0 +1,52 @@
+You can install ts-jest and dependencies all at once with one of the following commands.
+
+```bash
+npm install --save-dev jest typescript ts-jest @types/jest
+```
+
+**Jest config file**
+
+ts-jest can create the configuration file for you automatically:
+
+```bash
+npx ts-jest config:init
+```
+
+**Customizing**
+
+For customizing jest, please follow their [official guide online](https://jestjs.io/docs/configuration).
+
+ts-jest specific options can be found [here](https://kulshekhar.github.io/ts-jest/docs/getting-started/options/).
+
+
+**Install extensions for Jest in VS Studio Code**
+- [jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
+- [jest-snippets](https://marketplace.visualstudio.com/items?itemName=andys8.jest-snippets)
+- [jest-runner](https://marketplace.visualstudio.com/items?itemName=firsttris.vscode-jest-runner)
+
+Trying an example simply:
+
+```ts title="demo.ts"
+export function isPositive(n: number) {
+  return n > 0;
+}
+```
+
+Create a demo test file.
+
+```ts title="demo.test.s"
+import { isPositive } from "./demo";
+
+describe("isPositive()", () => {
+  it("should return true when n > 0", () => {
+    expect(isPositive(1)).toBe(true);
+  });
+
+  it("should return true when n = 0", () => {
+    expect(isPositive(0)).toBe(false);
+    expect(isPositive(-1)).toBe(false);
+  });
+});
+```
+
+Run it by Jest extension.

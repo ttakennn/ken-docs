@@ -1,0 +1,66 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+The destructuring assignment syntax is a JavaScript expression that makes it possible to unpack values from arrays,
+or properties from objects, into distinct variables.
+
+Using the <Highlight>Object Destructuring</Highlight> to access the `name` and `age`.
+```ts
+const user = { name: 'Mike', age: 30 };
+```
+
+```ts
+const { name, age } = user;
+console.log(name); // Mike
+console.log(age); // 30
+```
+
+Can access the first element of the array using array destructuring like this:
+```ts
+const allStates = [
+ {isoCode: 'IN', name: 'India'},
+ {isoCode: 'CA', name: 'Canada'}
+];
+```
+
+```ts
+const [firstObject] = allStates;
+console.log(firstObject); //  {isoCode: 'IN', name: 'India'}
+```
+
+We want to access the isoCode property from the first object of the array we can use object destructuring
+inside the array destructuring like this:
+
+```ts
+const [ {isoCode} ] = allStates;
+console.log(isoCode); // IN
+```
+
+To avoid getting `undefined`, we can assign a default value while destructuring itself like this:
+```ts
+const [ {isoCode = ''} ] = allStates;
+console.log(isoCode); // IN
+```
+
+If the <Highlight>allStates</Highlight> array itself is empty then the code will throw an error.
+```ts
+const allStates = [];
+const [ {isoCode = ''} ] = allStates;
+console.log(isoCode); // Cannot read properties of undefined (reading 'isoCode')
+```
+
+To avoid getting that error, we can assign an empty object during object destructuring itself like this:
+```ts
+const [ {isoCode = ''} = {} ] = allStates;
+console.log(isoCode); // ''
+```
+
+If we don’t want to use the <Highlight>isoCode</Highlight> property name, we can use renaming syntax during object destructuring like this:
+
+```ts
+const allStates = [
+ {isoCode: 'IN', name: 'India'},
+ {isoCode: 'CA', name: 'Canada'}
+];
+const [ {isoCode: firstCode} ] = allStates;
+console.log(firstCode); // IN
+```

@@ -1,0 +1,28 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+Another way to avoid nullable properties is to use the Optional Chaining operator.
+
+Instead of repeating yourself:
+```ts
+if (newArray !== null && newArray.length === 0) {
+  console.log('newArray is empty!');
+}
+```
+
+You can apply the <Highlight>Optional Chaining</Highlight>
+```ts
+if (newArray?.length === 0) {
+  console.log('newArray is empty!');
+}
+```
+
+Also works for as many properties as you have:
+```ts
+const name = currentUser?.username?.name?.firstName;
+```
+
+Combine the Optional Chaining with other operators as well:
+```ts
+const name = user?.username ?? 'Default Username';
+console.log(name);
+```

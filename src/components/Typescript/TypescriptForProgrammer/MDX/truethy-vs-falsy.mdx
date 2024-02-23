@@ -1,0 +1,180 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+**What is Falsy?**
+
+In simple terms, it’s any value that evaluates to false, nullable, or empty.
+
+- False => Falsy
+- Null => Falsy
+- Undefined => Falsy
+- Empty String => Falsy
+- Length of an array with no items inside => Falsy
+- Length of an object without keys (Object.keys(obj).length === 0) => Falsy
+- Zero => Falsy
+
+**What is Truthy?**
+
+Well, the opposite of Falsy:
+
+- True
+- Number greater or less than zero.
+- String with at least one character.
+- Array or an Object with at least one item.
+- Variable with a value. e.g. (<Highlight>‘A’</Highlight>, <Highlight>1</Highlight>, <Highlight>`{}`</Highlight>, <Highlight>[]</Highlight>)
+
+**Convert to Boolean**
+
+You can also explicitly convert a value into a boolean using a pair of exclamation marks.
+
+```bash
+const greeting = 'Hello';
+const truthy = !!greeting; // True
+
+const empty = '';
+const falsy = !!empty; // False
+```
+
+Alternatively, you can use the Boolean() constructor:
+
+```bash
+const greeting = 'Hello';
+const empty = '';
+
+console.log(Boolean(greeting)); // True
+console.log(Boolean(empty)); // False
+```
+
+**Nullish Coalescing**
+
+The ES2020 introduced a new operator, the <Highlight>Nullish Coalescing</Highlight>, also known as the Elvis operator.
+
+```js
+const possiblyNull = null;
+const result = possiblyNull ?? 'Default Value';
+console.log(result); // 'Default Value'
+
+const possiblyUndefined = undefined;
+const result = possiblyUndefined ?? 'Default Value';
+console.log(result); // 'Default Value'
+```
+
+It works similarly to the `||` operator. However, while `||` applies to all **falsy values**,
+the <Highlight>Nullish Coalescing</Highlight> operator is limited to only `null` and `undefined` values.
+
+**Nullish coalescing assignment**
+
+The nullish coalescing assignment (??=) operator, also known as the logical nullish assignment operator,
+only evaluates the right operand and assigns to the left if the left operand is nullish (null or undefined).
+
+```ts
+interface Example {
+  duration: number;
+  speed: number;
+}
+
+const a: Partial<Example> = { duration: 15 };
+a.duration ??= 10;
+console.log(a.duration); // Output: 50
+
+a.speed ??= 25;
+console.log(a.speed); // Output: 25
+```
+
+Nullish coalescing assignment short-circuits,
+meaning that `x ??= y` is equivalent to `x ?? (x = y)`, except that the expression `x` is only evaluated once.
+
+**Optional Chaining**
+
+Another way to avoid nullable properties is to use the Optional Chaining operator.
+
+Instead of repeating yourself:
+```ts
+if (newArray !== null && newArray.length === 0) {
+  console.log('newArray is empty!');
+}
+```
+
+You can apply the <Highlight>Optional Chaining</Highlight>
+```ts
+if (newArray?.length === 0) {
+  console.log('newArray is empty!');
+}
+```
+
+Also works for as many properties as you have:
+```ts
+const name = currentUser?.username?.name?.firstName;
+```
+
+Combine the Optional Chaining with other operators as well:
+```ts
+const name = user?.username ?? 'Default Username';
+console.log(name);
+```
+
+**Object Destructuring**
+
+The destructuring assignment syntax is a JavaScript expression that makes it possible to unpack values from arrays,
+or properties from objects, into distinct variables.
+
+Using the <Highlight>Object Destructuring</Highlight> to access the `name` and `age`.
+```ts
+const user = { name: 'Mike', age: 30 };
+```
+
+```ts
+const { name, age } = user;
+console.log(name); // Mike
+console.log(age); // 30
+```
+
+Can access the first element of the array using array destructuring like this:
+```ts
+const allStates = [
+ {isoCode: 'IN', name: 'India'},
+ {isoCode: 'CA', name: 'Canada'}
+];
+```
+
+```ts
+const [firstObject] = allStates;
+console.log(firstObject); //  {isoCode: 'IN', name: 'India'}
+```
+
+We want to access the isoCode property from the first object of the array we can use object destructuring
+inside the array destructuring like this:
+
+```ts
+const [ {isoCode} ] = allStates;
+console.log(isoCode); // IN
+```
+
+To avoid getting `undefined`, we can assign a default value while destructuring itself like this:
+```ts
+const [ {isoCode = ''} ] = allStates;
+console.log(isoCode); // IN
+```
+
+If the <Highlight>allStates</Highlight> array itself is empty then the code will throw an error.
+```ts
+const allStates = [];
+const [ {isoCode = ''} ] = allStates;
+console.log(isoCode); // Cannot read properties of undefined (reading 'isoCode')
+```
+
+To avoid getting that error, we can assign an empty object during object destructuring itself like this:
+```ts
+const [ {isoCode = ''} = {} ] = allStates;
+console.log(isoCode); // ''
+```
+
+If we don’t want to use the <Highlight>isoCode</Highlight> property name, we can use renaming syntax during object destructuring like this:
+
+```ts
+const allStates = [
+ {isoCode: 'IN', name: 'India'},
+ {isoCode: 'CA', name: 'Canada'}
+];
+const [ {isoCode: firstCode} ] = allStates;
+console.log(firstCode); // IN
+```

@@ -1,0 +1,66 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+The rest operator is the same as the spread operator which has three dots(…).
+The rest parameter usage is different from or even we can it is opposite of the spread operator.
+The spread operator expands the contents of an array or an object but the rest parameter collects the contents of the array or object.
+The rest parameter is ES6/ES2015.
+
+**Function Parameter Gathering**
+
+When we want to pass an unknown number of arguments to a function, the rest operator provides an elegant solution.
+It gathers the extra arguments into an array, allowing us to work with them easily.
+
+```ts
+function sum(...numbers: number[]) {
+  let result = 0;
+
+  for (let i of numbers) {
+    result += i;
+  }
+
+  return result;
+}
+
+console.log(sum(10, 20, 30, 40)); // 100
+```
+
+```ts
+function sum(index: number, ...numbers: number[]) {
+  return numbers.map((num) => num * index);
+}
+
+console.log(sum(10, 20, 30, 40)); // [200, 300, 400]
+```
+
+**Destructuring Assignments**
+
+The rest operator can be used within destructuring assignments to capture the remaining elements of an array or object.
+This technique proves helpful when we only need a subset of the values
+
+```ts title="Get elements from Array"
+const [first, ...rest] = [1, 2, 3, 4, 5];
+console.log(first); // 1
+console.log(rest); // [2, 3, 4, 5]
+```
+
+```ts title="Omit properties from an object"
+const user = {
+  name: "Anh Thai",
+  city: "HCM",
+  zipCode: 234027,
+};
+
+const { name, ...address } = user;
+console.log(name); // Anh Thai
+console.log(address); // { city: 'HCM', zipCode: 234027 }
+```
+
+```ts title="Get a new object"
+const data = { name: "Anh Thai", city: "HCM" };
+const copy = { ...data, product: "Pepen" };
+
+const { name, ...info } = copy;
+console.log(name); // Anh Thai
+console.log(info); // { city: 'HCM', product: 'Pepen' }
+```
+

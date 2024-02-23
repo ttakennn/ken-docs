@@ -1,0 +1,102 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+The spread operator is represented with three dots (…) and is being used to take elements out of something like an array, or an object.
+By using the spread syntax, we can make some complex operations much easier.
+
+**Spread Operator with Arrays**
+
+```ts
+const numbers = [1,2,3,4,5];
+console.log(...numberList);   // output: 1,2,3,4,5
+console.log([...numberList]); // output: [1,2,3,4,5]
+```
+
+**Merging Arrays**
+
+```ts
+const numbers = [1,2,3,4,5];
+const moreNumbers = [6,7,8,9,10];
+
+const newArray = [...numbers, ...moreNumbers]; // output: [1,2,3,4,5,6,7,8,9,10]
+```
+
+**Object Cloning**
+
+```ts
+const originalObject = { name: 'John', age: 25 };
+const clonedObject = { ...originalObject }; // { name: 'John', age: 25 }
+
+const numberList = [1,2,3,4];
+const newList1 = [...numberList]; // [1,2,3,4]
+const newList2 = [...numberList, 5, 6]; // [1,2,3,4,5,6]
+````
+
+
+**Dividing a String**
+
+```ts
+const word = 'spread';
+charArray = [...word];
+
+console.log(charArray);  // ['s','p','r','e','a','d']
+```
+
+**Spread Operator with Objects**
+
+We can also merge two objects easily by using the spread syntax.
+To do that, spreading two or more objects inside a new object will combine them:
+
+```ts title="Merge object"
+const obj1 = {
+  firstName: 'John',
+  lastName: 'Doe'
+};
+
+const obj2 = {
+  age: 25
+};
+const person = { ...obj1, ...obj2 };
+
+console.log(person); // {firstName: 'John', lastName: 'Doe', age: 25}
+```
+
+```ts title="Clone object"
+const user1 = {
+  name: "AnhT",
+  city: "HCM",
+  zipCode: 123,
+};
+
+const user2 = {
+  ...user1,
+  name: "Ken",
+};
+
+console.log(user1); // {name: 'AnhT', city: 'HCM', zipCode: 123}
+console.log(user2); // {name: 'Ken', city: 'HCM', zipCode: 123}
+console.log(user1 == user2); // false
+```
+:::warning
+When we clone data from an array, be careful because it only clones the array, not each element inside the array.
+:::
+
+```ts
+interface Student {
+  id: number;
+  name: string;
+  city: string;
+}
+
+const studentList: Student[] = [
+  { id: 1, name: "An", city: "HCM" },
+  { id: 1, name: "Bao", city: "CT" },
+];
+
+const newList = [...studentList];
+newList[0].name = "Misoo";
+
+console.log(newList[0]); // {id: 1, name: 'Misoo', city: 'HCM'}
+console.log(studentList[0]); // {id: 1, name: 'Misoo', city: 'HCM'}
+```
+
+Please using the [<Highlight>structuredClone</Highlight>](https://developer.mozilla.org/en-US/docs/Web/API/structuredClone) of JS 2022.
