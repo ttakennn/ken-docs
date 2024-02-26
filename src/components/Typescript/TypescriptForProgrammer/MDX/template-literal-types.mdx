@@ -1,0 +1,90 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+This feature allows developers to use the template literal syntax not only in values but also in types.
+The template literal syntax facilitates the insertion of values into strings in a readable and straightforward way
+by utilizing backticks to delimit expressions surrounded by `${…}`.
+
+```ts title="Custom Cirection"
+type Direction = 'left' | 'right' | 'up' | 'down';
+
+// Only 'go-left' | 'go-right' | 'go-up' | 'go-down' is allowed
+type DirectionCommand = `go-${Direction}`
+
+// ✅
+const goodDirection: DirectionCommand = 'go-right';
+
+// 🛑 Type '"go-somewhere"' is not assigable to type '"go-left" | "go-right" | "go-up" | "go-down"'.
+const badDirection: DirectionCommand = 'go-somewhere';
+```
+
+```ts title="Custom LanguageCode"
+// Union between multiple language code strings
+type LanguageCode = 'en' | 'es' | 'ru';
+
+// Error pattern definition using Template Literal Types
+type TranslatedError = `error-${number}:${LanguageCode}`;
+
+// ✅
+const error1: TranslatedError = 'error-134:en';
+const error2: TranslatedError = 'error-3:es';
+const error3: TranslatedError = 'error-4:ru';
+
+// 🛑 ... not assignable to type ...
+const error4: TranslatedError = 'error-something:es'; // wrong number
+const error5: TranslatedError = 'fault-4:en'; // wrong pattern
+const error6: TranslatedError = 'error-3:english' // wrong language code
+```
+
+```ts title="Custom Color"
+type Color = 'primary' | 'secondary' | 'accent';
+type Grade = 'light' | 'dark';
+type ColorWithGrade = `${Color}${Capitalize<Grade>}`;
+
+// "primaryLight" | "primaryDark" | "secondaryLight" | "secondaryDark" | "accentLight" | "accentDark"
+const primaryLight: ColorWithGrade = 'primaryLight';
+const accentDark: ColorWithGrade = 'accentDark';
+```
+
+**New Type Aliases**
+
+Capitalize, Lowercase, Uppercase, Uncapitalize.
+
+```ts
+// Capitalize
+type Name = "mauro" | "andrea" | "johan";
+type Surname = "rossi" | "bianchi" | "coppi";
+
+// "Mauro Rossi" | "Mauro Bianchi" | "Mauro Coppi" | "Andrea Rossi" | "Andrea Bianchi" | "Andrea Coppi" | "Johan Rossi" | "Johan Bianchi" | "Johan Coppi"
+type FullName = `${Capitalize<Name>} ${Capitalize<Surname>}`;
+
+type Person = {
+  fullName: FullName;
+  age: number;
+};
+
+const person: Person = {
+  fullName: "Andrea Rossi",
+  age: 22,
+};
+
+// Uppercase
+type Entity = "user" | "post";
+type Status = "request" | "success" | "failure";
+type Action = "fetch" | "update" | "create";
+
+// "FETCH_USER_REQUEST" | "FETCH_USER_SUCCESS" | "FETCH_USER_FAILURE" | "FETCH_POST_REQUEST" | "FETCH_POST_SUCCESS" | "FETCH_POST_FAILURE" | "UPDATE_USER_REQUEST" | "UPDATE_USER_SUCCESS"
+type ActionType =
+  `${Uppercase<Action>}_${Uppercase<Entity>}_${Uppercase<Status>}`;
+const fetchUserRequestType: ActionType = "FETCH_POST_REQUEST";
+
+// Lowercase and Uncapitalize
+type VerticalPosition = "TOP" | "BOTTOM";
+type HorizontalPosition = "Right" | "Left";
+
+//  "right-top" | "right-bottom" | "left-top" | "left-bottom"
+type PositionAlias =
+  `${Uncapitalize<HorizontalPosition>}-${Lowercase<VerticalPosition>}`;
+
+const headerPosition: PositionAlias = "right-top";
+
+```

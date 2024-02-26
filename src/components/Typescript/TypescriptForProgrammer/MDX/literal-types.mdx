@@ -1,0 +1,131 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+Literals are exact values that are JavaScript primitives.
+
+Both `var` and `let` allow for changing what is held inside the variable, and `const` does not.
+This is reflected in how TypeScript creates types for literals.
+```ts
+let changingString = "Hello World"; // changingString: string = 'Hello World';
+changingString = "Hello Everyone";
+// Because `changingString` can represent any possible string, that
+// is how TypeScript describes it in the type system
+changingString;
+
+const constantString = "Hello World"; // it's const
+// Because `constantString` can only represent 1 possible string, it
+// has a literal type representation
+constantString;
+```
+
+Combining literals into unions.
+```ts {6}
+function printText(s: string, alignment: "left" | "right" | "center") {
+  // ...
+}
+printText("Hello, world", "left");
+printText("G'day, mate", "centre");
+Argument of type '"centre"' is not assignable to parameter of type '"left" | "right" | "center"'.
+```
+
+**Numeric literal types**
+```ts
+function compare(a: string, b: string): -1 | 0 | 1 {
+  return a === b ? 0 : a > b ? 1 : -1;
+}
+```
+
+**Non-literal types**
+```ts {10}
+interface Options {
+  width: number;
+}
+function configure(x: Options | "auto") {
+  // ...
+}
+configure({ width: 100 });
+configure("auto");
+configure("automatic");
+Argument of type '"automatic"' is not assignable to parameter of type 'Options | "auto"'.
+```
+
+**Literal Inference**
+```ts {5}
+declare function handleRequest(url: string, method: "GET" | "POST"): void;
+
+const req = { url: "https://example.com", method: "GET" };
+handleRequest(req.url, req.method);
+Argument of type 'string' is not assignable to parameter of type '"GET" | "POST"'.
+```
+
+To work around this. You can use `as const` to convert the entire object to be type literals.
+```ts
+const req = { url: "https://example.com", method: "GET" } as const;
+handleRequest(req.url, req.method);
+```
+
+We can create a type which consists of set of string values.
+```ts
+type Color = 'primary' | 'secondary' | 'accent';
+
+type Colors = {
+  [K in Color]: string;
+}
+
+const colors: Colors = {
+  primary: 'red',
+  secondary: 'blue',
+  accent: 'green'
+};
+```
+
+**String based enums**
+
+You can even generate a `Key:Value` structure using the following function
+
+```ts
+function strEnum<T extends string>(o: Array<T>): { [K in Uppercase<T>]: K } {
+  return o.reduce((res, key) => {
+    const newKey = `${key}`.toUpperCase();
+    res[newKey] = key;
+    return res;
+  }, Object.create(null));
+}
+
+const Direction = strEnum(["North", "South", "East", "West"]);
+type Direction = keyof typeof Direction; // type Direction = "NORTH" | "SOUTH" | "EAST" | "WEST"
+
+let sample: Direction;
+sample = Direction.NORTH;
+
+console.log("Sample: ", sample); // Sample:  North
+```
+
+**Convert Object Keys To Uppercase**
+
+```ts
+// All string-type keys in the object, and then uppercased
+type UppercaseStringKeys<T> = Uppercase<Extract<keyof T, string>>;
+
+// An object consisting of the above keys with the same values from the original object
+type UppercaseObjectKeys<T extends { [key: string | number | symbol]: any }> = {
+  [x in UppercaseStringKeys<T>]: x extends string ? T[Lowercase<x>] : T[x];
+};
+
+function uppercaseObjectKeys<T extends Record<any, any>>(existingObject: T) {
+  return Object.keys(existingObject).reduce((acc, key) => {
+    const newKey = `${key}`.toUpperCase() as keyof UppercaseObjectKeys<T>;
+    acc[newKey] = existingObject[key];
+    return acc;
+  }, {} as UppercaseObjectKeys<T>);
+}
+
+const data = {
+  id: 1,
+  product: {},
+  userName: "user",
+};
+
+const listObjects = uppercaseObjectKeys(data);
+console.log(listObjects); // {ID: 1, PRODUCT: {…}, USERNAME: 'user'}
+
+```
