@@ -1,0 +1,56 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+It is called const assertion. Const's assertion was released in TypeScript v3.4 and above.
+- Object literals get readonly properties.
+- Array literals become readonly tuples.
+
+**No type widening for literal types**
+
+```ts title="With let"
+let user = 'Azure Do';
+user = 'Ken'; // works
+```
+
+```ts title="With const"
+const user = 'Azure Do';
+user = 'Ken'; // Cannot assign to 'user' because it is a constant
+
+let product = 'Shoppe' as const; // read-only
+```
+
+**Object literals get read-only properties**
+
+```ts title="With let"
+let user = {
+  name: 'Mi-soo',
+  city: 'HCM',
+}
+
+user.city = 'BT';
+console.log(user); // { name: 'Mi-soo', city: 'BT' }
+```
+
+```ts title="With const"
+const user = {
+  name: 'Mi-soo',
+  city: 'HCM',
+}
+
+user.city = 'BT';
+console.log(user); // { name: 'Mi-soo', city: 'BT' }
+```
+
+You can see both still work. Because it is not read-only and just informs us
+if the data has two properties with string type for each property.
+
+We can also use it for array literals.
+```ts title="With as const"
+const user = {
+  name: "Mi-soo",
+  city: "HCM",
+  favorites: ["game", "music", "travel"],
+} as const; // const user: { readonly name: "Mi-soo"; readonly city: "HCM"; readonly favorites: readonly ["game", "music", "travel"]; }
+
+user.city = "BT"; // Cannot assign to 'city' because it is a read-only property.
+console.log(user);
+```

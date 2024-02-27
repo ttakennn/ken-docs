@@ -1,0 +1,257 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+The <Highlight>Enum</Highlight> is one of the TypeScript types that allows us to declare a set of pre-defined values/constants.
+
+```ts
+enum Direction {
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT
+}
+
+const north: Direction = Direction.UP;
+
+console.log(north); // 0
+console.log(Direction.DOWN); // 1
+console.log(Direction[Direction.LEFT]); // 2
+```
+
+We can change the sequence by manually assigning a number to one of the numbers:
+```ts
+enum Direction {
+  UP,
+  DOWN,
+  LEFT = 5,
+  RIGHT,
+}
+
+console.log(Direction.UP); // 0
+console.log(Direction.DOWN); // 1
+console.log(Direction.LEFT); // 5
+console.log(Direction.RIGHT); // 6
+```
+
+Enums support accessing data in both directions from key to value, and value to key.
+```ts
+enum Direction {
+  UP,
+  DOWN,
+  LEFT = 5,
+  RIGHT,
+}
+
+console.log(Direction[5]); // LEFT
+console.log(Direction["RIGHT"]); // 6
+```
+**String Enums**
+
+Enums can also contain strings.This is more common than numeric enums, because of their readability and intent.
+```ts
+enum Direction {
+  UP = "UP",
+  DOWN = "DOWN",
+  LEFT = "LEFT",
+  RIGHT = "RIGHT",
+}
+
+const north: Direction = Direction.UP;
+
+console.log(north); // UP
+console.log(Direction.DOWN); // DOWN
+console.log(Direction[Direction.LEFT]); // LEFT
+console.log(Direction["RIGHT"]); // RIGHT
+```
+
+**Const Enums**
+
+Using const enum means that you lose some of the functionality you can get from enums.
+For example, you cannot do this.
+
+```ts
+const enum Direction {
+  UP,
+  DOWN,
+  LEFT,
+  RIGHT
+}
+
+const north: Direction = Direction.UP;
+console.log(Direction[north]); // ERROR.
+```
+
+Another example with function.
+
+```ts
+const enum LogLevel {
+  ERROR,
+  WARN,
+  INFO,
+  DEBUG,
+}
+
+type LogLevelStrings = keyof typeof LogLevel;
+
+function printImportant(key: LogLevelStrings, message: string) {
+  const num = LogLevel[key]; // ERROR
+  console.log("Num: ", num);
+  console.log("Message: ", message);
+}
+```
+
+The values of const won't change when using <Highlight>as const</Highlight>. It's read-only.
+```ts
+const Theme = {
+  DEFAULT: 'Default',
+  LIGHT: 'Light',
+  DARK: 'Dark',
+} as const;
+
+type Theme = typeof Theme[keyof typeof Theme];
+let darkTheme: Theme = Theme.DARK;
+let lightTheme: Theme = "Dark";
+
+console.log(Theme.LIGHT); // Light
+const invalidTheme: Theme = 'Blue'; // ERROR
+```
+
+**Difference between const and without const**
+
+You write enums with const it will compile less code, and it’s more clearly for the JavaScript compiled.
+```ts title="TS"
+ const enum welcome {
+  hello = "Hi",
+  medium = "Medium",
+}
+
+const morning = welcome.hello + " " + welcome.medium;
+console.log(morning);
+```
+
+After compiled to JavaScript.
+```js title="JS"
+"use strict";
+const morning = "Hi" /* welcome.hello */ + " " + "Medium" /* welcome.medium */;
+console.log(morning);
+```
+
+But if you want to only use enums without const it will create an auto invoke function with all the variables of the enum, and it looks a little messy.
+```ts title="TS"
+ enum welcome {
+  hello = "Hi",
+  medium = "Medium",
+}
+
+const morning = welcome.hello + " " + welcome.medium;
+console.log(morning);
+```
+
+After compiled to JavaScript.
+```js
+"use strict";
+var welcome;
+(function (welcome) {
+    welcome["hello"] = "Hi";
+    welcome["medium"] = "Medium";
+})(welcome || (welcome = {}));
+const morning = welcome.hello + " " + welcome.medium;
+console.log(morning);
+```
+
+That only affects on the compiled JavaScript.
+
+
+**Map your TypeScript Enums**
+
+Using Enum as key we can create ES6 Map that maps enum key to meaningful message.
+
+```ts
+enum Fruits {
+  APPLE,
+  ORANGES,
+}
+
+const FruitsName = new Map<number, string>([
+  [Fruits.APPLE, "Yummy Apples"],
+  [Fruits.ORANGES, "Big Oranges"],
+]);
+
+const fruitList = FruitsName;
+console.log(fruitList.get(Fruits.APPLE)); // Yummy Apples
+console.log(fruitList.get(Fruits.ORANGES)); // Big Oranges
+```
+
+**Reverse mapping**
+
+For any kind of Flow Enum, if you have an enum value and want to get the name of the member for that value.
+
+```ts
+enum Status {
+  Active = 0,
+  Paused = 1,
+  Off = 2,
+}
+console.log(Status[Status.Off]); // "Off"
+
+enum Status2 {
+  Active = "Active",
+  Paused = "Paused",
+  Off = "Off",
+}
+console.log(Status2[Status2.Off]); // "Off"
+
+enum Status3 {
+  Active = "a",
+  Paused = "p",
+  Off = "o",
+}
+// Element implicitly has an 'any' type because expression of type 'Status2.Off' can't be used to index type 'typeof Status2'.
+console.log(Status3[Status3.Off]);
+```
+
+**Computed enums**
+
+The value of an enum member can be a constant value or a computed value.
+```ts
+enum CarType {
+  Honda = 1,
+  Toyota = getCarTypeCode("toyota"),
+  Subaru = Toyota * 3,
+  Hyundai = 10,
+}
+
+function getCarTypeCode(carName: string): number {
+  if (carName === "toyota") {
+    return 5;
+  }
+  return 1;
+}
+
+console.log(CarType.Toyota); // 5
+console.log(CarType.Subaru); // 15
+```
+
+If the enum includes both computed and constant members, then uninitiated enum members either come first
+or after other initialized members with numeric constants. This next example will show an error:
+```ts
+enum CarType {
+  Toyota = getCarTypeCode('toyota'),
+  Honda, // Error: Enum member must have initializer
+  Subaru,
+  Hyundai = Toyota * 3,
+}
+```
+
+You can declare the above enum like this:
+```ts
+enum CarType {
+  Honda,
+  Hyundai,
+  Toyota = getCarTypeCode("toyota"),
+  Subaru = Toyota * 3,
+}
+```
+
+**Conclusion**
+
+Enum is a nice feature that we can use to organize our code and make it more maintainable.
