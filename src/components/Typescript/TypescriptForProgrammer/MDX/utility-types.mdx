@@ -1,0 +1,472 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+<Highlight>Utility Types</Highlight> are a powerful toolset of predefined generic types that simplify type manipulation and transformation.
+They offer convenient operations and transformations on types, providing developers with enhanced capabilities to work with complex type systems.
+
+**Partial`<T>`**
+
+Creates a new type with all properties of <Highlight>T</Highlight> set to optional.
+
+```ts
+interface User {
+  name: string;
+  age: number;
+}
+
+const partialUser: Partial<User> = {
+  name: "John",
+};
+```
+You can see, there's no need to declare <Highlight>age</Highlight> but it still works. That's the function of <Highlight>Partial</Highlight>.
+
+**Required`<T>`**
+
+Creates a new type with all properties of <Highlight>T</Highlight> set to require.
+
+```ts
+interface User {
+  name?: string; // optional
+  age?: number; // optional
+}
+
+type RequiredUser = Required<User>;
+
+// TS2741: Property age is missing in type { name: string; } but required in type Required<User>
+const requiredUser: RequiredUser = {
+  name: "John",
+};
+```
+
+It should be.
+
+```ts
+const requiredUser: RequiredUser = {
+  name: "John",
+  age: 12
+};
+```
+
+**Readonly`<T>`**
+
+Creates a new type with all properties of <Highlight>T</Highlight> set to read-only.
+
+```ts
+interface User {
+  name: string;
+  age: number;
+}
+
+const readonlyUser: Readonly<User> = {
+  name: "Kae",
+  age: 20,
+};
+
+// Error: Cannot assign to 'name' because it is a read-only property.
+readonlyUser.name = "Smith";
+```
+
+**Record`<K, T>`**
+
+Creates a new type with properties of type <Highlight>T</Highlight> for each key <Highlight>K</Highlight>.
+
+```ts
+type Weekday = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday";
+
+type DailySchedule = Record<Weekday, string[]>;
+
+const schedule: DailySchedule = {
+  Monday: ["Meeting"],
+  Tuesday: ["Gym"],
+  Wednesday: ['Book', 'Game'],
+  Thursday: ["Date"],
+  Friday: ["Coding"],
+};
+
+// {"Monday":["Meeting"],"Tuesday":["Gym"],"Wednesday":["Book","Game"],"Thursday":["Date"],"Friday":["Coding"]}
+console.log(JSON.stringify(schedule));
+```
+
+**Pick`<T, K>`**
+
+Creates a new type by picking properties <Highlight>K</Highlight> from <Highlight>T</Highlight>.
+
+```ts
+interface User {
+  name: string;
+  age: number;
+  email: string;
+  address: string;
+}
+
+type UserProfile = Pick<User, "name" | "email">;
+
+const userProfile: UserProfile = {
+  name: "tta",
+  email: "tta@gmail.com",
+};
+```
+
+If we add more <Highlight>age</Highlight> elements, it'll throw an error message as below.
+
+```ts
+const userProfile: UserProfile = {
+  name: "tta",
+  email: "tta@gmail.com",
+  age: 1, // TS2353: Object literal may only specify known properties, and age does not exist in type
+};
+```
+
+**Omit`<T, K>`**
+
+Creates a new type by omitting specific properties <Highlight>K</Highlight> from the original type <Highlight>T</Highlight>.
+
+```ts
+interface User {
+  name: string;
+  age: number;
+  email: string;
+  address: string;
+}
+
+type UserWithoutEmail = Omit<User, 'email'>;
+
+const user: UserWithoutEmail = {
+  name: 'Kan',
+  age: 25,
+  address: '60 TS, HCM',
+};
+```
+
+If we add more <Highlight>email</Highlight> elements, it'll throw an error message as below.
+
+```ts
+const user: UserWithoutEmail = {
+  name: 'Kan',
+  age: 25,
+  address: '60 TS, HCM',
+
+  // TS2353: Object literal may only specify known properties, and email does not exist in type UserWithoutEmail
+  email: 'tt@gmail.com',
+};
+```
+
+**Exclude`<T, U>`**
+
+Creates a new type by excluding types from <Highlight>T</Highlight> that are assignable to <Highlight>U</Highlight>.
+
+```ts
+type Product = {
+  id: number;
+  name: string;
+  code: number;
+  isActive: boolean;
+};
+
+// Exclude 'name' and 'isActive' from Product
+type excludeProductKeys = Exclude<keyof Product, 'name' | 'isActive'>;
+
+// Usage example
+const sampleProduct: Product = {
+  id: 1,
+  name: "Example Product",
+  code: 123,
+  isActive: true,
+};
+
+function getProductKey(key: excludeProductKeys) {
+  return sampleProduct[key];
+}
+
+// Valid keys are 'id' and 'code'
+console.log(getProductKey('id')); // Output: 1
+console.log(getProductKey('code')); // Output: 123
+
+// These will result in TypeScript errors because 'name' and 'isActive' are excluded
+// console.log(getProductKey('name'));
+// console.log(getProductKey('isActive'));
+```
+
+**Extract`<T, U>`**
+
+Creates a new type by extracting types from <Highlight>T</Highlight> that are assignable to <Highlight>U</Highlight>.
+
+```ts
+type Product = {
+  id: number;
+  name: string;
+  code: number;
+  isActive: boolean;
+};
+
+// Extract 'name' and 'code' from Product
+type ExtractedKeys = Extract<keyof Product, 'name' | 'code'>;
+
+// Usage example
+const myProduct: Product = {
+  id: 1,
+  name: "Kan Joe",
+  code: 12430,
+  isActive: true,
+};
+
+function getProperty(obj: Product, key: ExtractedKeys) {
+  return obj[key];
+}
+
+// Valid keys are 'name' and 'age'
+console.log(getProperty(myProduct, 'name')); // Output: "Kan Joe"
+console.log(getProperty(myProduct, 'code')); // Output: 12430
+
+// These will result in TypeScript errors because 'id' and 'isActive' are not in ExtractedKeys
+// console.log(getProperty(myObj, 'id'));
+// console.log(getProperty(myObj, 'isActive'));
+```
+
+**ReadonlyArray**
+
+Prevents array from changes.
+```bash title="Documentation"
+interface ReadonlyArray<T> {
+    /** Iterator of values in the array. */
+    [Symbol.iterator](): IterableIterator<T>;
+    /**
+     * Returns an iterable of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, T]>;
+    /**
+     * Returns an iterable of keys in the array
+     */
+    keys(): IterableIterator<number>;
+    /**
+     * Returns an iterable of values in the array
+     */
+    values(): IterableIterator<T>;
+}
+```
+
+An example about <Highlight>ReadonlyArray</Highlight>.
+```ts
+let readonlyArray: ReadonlyArray<number> = [1, 2, 3];
+// readonlyArray.push(4); // Because: Property 'push' does not exist on type 'readonly number[]'
+```
+
+Using <Highlight>entries()</Highlight>.
+```ts
+interface Person {
+  id: number,
+  name: string;
+}
+
+// Define a ReadonlyArray
+const myArray: ReadonlyArray<Person> = [
+  {
+    id: 1,
+    name: 'Mi Soo'
+  },
+  {
+    id: 2,
+    name: 'Azure Do'
+  }
+];
+
+const entriesIterator: IterableIterator<[number, Person]> = myArray.entries();
+for (const entry of entriesIterator) {
+  const index = entry[0];
+  const person = entry[1];
+  console.log(`Index: ${index} -- Id: ${person.id} -- Name: ${person.name}`);
+}
+
+// Output
+// Index: 0 -- Id: 1 -- Name: Mi Soo
+// Index: 1 -- Id: 2 -- Name: Azure Do
+```
+
+Using <Highlight>keys()</Highlight>
+```ts
+const keysIterator: IterableIterator<number> = myArray.keys();
+for (const key of keysIterator) {
+  console.log(`Index: ${key}`);
+}
+
+// Output
+// Index: 1
+// Index: 2
+```
+
+Using <Highlight>values()</Highlight>
+```ts
+const valuesIterator: IterableIterator<Person> = myArray.values();
+for (const person of valuesIterator) {
+  console.log(`ID: ${person.id} -- Name: ${person.name}`);
+}
+// Output
+// ID: 1 -- Name: Mi Soo
+// ID: 2 -- Name: Azure Do
+```
+
+**NonNullable`<T>`**
+
+Gives the ability to describe brand-new type from already existing, which will prevent null values for all fields.
+```bash title="Documentation"
+/**
+ * Exclude null and undefined from T
+ */
+type NonNullable<T> = T extends null | undefined ? never : T;
+```
+
+```ts title="Example"
+interface User {
+  name: string;
+}
+
+type NonNullableUser = NonNullable<User>;
+let user1: NonNullableUser = { name: 'Mi Soo' };
+
+// S2322: Type null is not assignable to type string
+let user2: NonNullableUser = { name: null };
+
+// TS2322: Type undefined is not assignable to type string
+let user3: NonNullableUser = { name: undefined };
+```
+
+**Parameters`<T extends (...args: any) => any>`**
+
+Creates an array of types from the existing function which will have the same list of types as function arguments.
+```bash title="Documentation"
+/**
+ * Obtain the parameters of a function type in a tuple
+ */
+type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
+```
+
+```ts title="Example"
+function getUserInfo(id: number, name: string, isActive: boolean) {
+  // ...
+}
+type userType = Parameters<typeof getUserInfo>;
+
+const user: userType = [1, 'Mi', true];
+const user2: userType = ['2', 23, true]; // TS2322: Type string is not assignable to type number
+```
+
+**ConstructorParameters`<T extends new (...args: any) => any>`**
+
+Built-in type is pretty similar to Parameters type except that it collects property types from the constructor.
+```bash title="Documentation"
+/**
+ * Obtain the parameters of a constructor function type in a tuple
+ */
+type ConstructorParameters<T extends new (...args: any) => any> = T extends new (...args: infer P) => any ? P : never;
+```
+
+```ts title="Example"
+class Hero {
+  private _firstname: string;
+  private _lastname: string;
+  constructor(firstname: string, lastname: string) {
+    this._firstname = firstname;
+    this._lastname = lastname;
+  }
+}
+
+type HeroConstructorArgsType = ConstructorParameters<typeof Hero>;
+let userHero: HeroConstructorArgsType = ['firstName', 'lastName'];
+let userHero2: HeroConstructorArgsType = [123, 'lastName']; // TS2322: Type number is not assignable to type string
+```
+
+**ReturnType`<T extends (...args: any) => any>`**
+
+If we want to extract type which will be returned by the function. ReturnType is exactly we are looking for.
+```bash title="Documentation"
+/**
+ * Obtain the return type of a function type
+ */
+type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
+```
+
+```ts title="Example"
+let f1 = () => ({ a: 23, b: 33 });
+type T0 = ReturnType<() => string>;  // string
+type T1 = ReturnType<(s: string) => void>;  // void
+type T2 = ReturnType<(<T>() => T)>;  // {}
+type T3 = ReturnType<(<T extends U, U extends number[]>() => T)>;  // number[]
+type T4 = ReturnType<typeof f1>;  // { a: number, b: string }
+type T5 = ReturnType<any>;  // any
+type T6 = ReturnType<never>;  // any
+type T7 = ReturnType<string>;  // TS2344: Type string does not satisfy the constraint (...args: any) => any
+type T8 = ReturnType<Function>; // TS2344: Type Function does not satisfy the constraint (...args: any) => any
+
+const example: T4 = { a: 10, b: 50 }; // OK
+```
+
+**InstanceType`<T extends new (...args: any) => any>`**
+
+Constructs a type consisting of the instance type of a constructor function type T.
+```bash title="Documentation"
+/**
+ * Obtain the return type of a constructor function type
+ */
+type InstanceType<T extends new (...args: any) => any> = T extends new (...args: any) => infer R ? R : any;
+```
+
+```ts title="Example"
+class User {
+  id: number = 1;
+  name: string = 'Mi-soo';
+}
+type T0 = InstanceType<typeof User>;  // User
+type T1 = InstanceType<any>;  // any
+type T2 = InstanceType<never>;  // any
+type T3 = InstanceType<string>;  // TS2344: Type string does not satisfy the constraint abstract new (...args: any) => any
+type T4 = InstanceType<Function>;  // TS2344: Type Function does not satisfy the constraint abstract new (...args: any) => any
+
+const user1: T0 = {id: 1, name: 'Azure Do'}; // OK
+
+// TS2353: Object literal may only specify known properties, and city does not exist in type User
+const user2: T0 = {id: 1, name: 'Azure Do', city: 'HCM'};
+```
+
+**Combining Built-Ins with other types**
+
+```ts
+interface User {
+  name: string;
+  profession?: string;
+}
+
+interface Credentials {
+  password: string;
+  confirm: string;
+}
+
+type UserMaybeWithCredentials = Required<User> & Partial<Credentials>;
+
+// OK
+const user1: UserMaybeWithCredentials = {
+  name: 'John',
+  profession: 'Developer',
+  password: 'pass'
+}
+
+// OK
+const user2: UserMaybeWithCredentials = {
+  name: 'John',
+  profession: 'Developer',
+  password: 'pass',
+  confirm: 'pass'
+}
+
+// Property name is missing in type
+const user3: UserMaybeWithCredentials = {
+  profession: 'Developer',
+  password: 'pass',
+  confirm: 'pass'
+}
+
+// Property profession is missing in type
+const user4: UserMaybeWithCredentials = {
+  name: 'John',
+  password: 'pass',
+  confirm: 'pass'
+}
+```
