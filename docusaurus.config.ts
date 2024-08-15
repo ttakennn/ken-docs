@@ -1,25 +1,25 @@
-import { themes as prismThemes } from "prism-react-renderer";
-import type { Config } from "@docusaurus/types";
-import type * as Preset from "@docusaurus/preset-classic";
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
+import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: "◃Ken Handbook▹",
-  tagline: "Enjoy your code!",
-  favicon: "img/favicon.ico",
+  title: '◃Ken Handbook▹',
+  tagline: 'Enjoy your code!',
+  favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: "https://ken-docs.vercel.app",
+  url: 'https://ken-docs.vercel.app',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/",
+  baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "ttakennn", // Usually your GitHub org/user name.
-  projectName: "ken-docs", // Usually your repo name.
+  organizationName: 'ttakennn', // Usually your GitHub org/user name.
+  projectName: 'ken-docs', // Usually your repo name.
 
-  onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -43,12 +43,12 @@ const config: Config = {
 
   presets: [
     [
-      "classic",
+      'classic',
       {
         docs: {
-          path: "docs",
+          path: 'docs',
           breadcrumbs: true,
-          sidebarPath: "./sidebars.ts",
+          sidebarPath: './sidebars.ts',
           sidebarCollapsed: true,
           showLastUpdateTime: true,
           showLastUpdateAuthor: true,
@@ -60,12 +60,19 @@ const config: Config = {
           },
         },
         blog: {
+          path: 'blog',
+          blogTitle: 'Blog title',
+          blogDescription: 'Blog',
+          blogSidebarCount: 'ALL',
+          blogSidebarTitle: 'All our posts',
+          routeBasePath: 'blog',
+          postsPerPage: 5,
           showReadingTime: true,
           readingTime: ({ content, frontMatter, defaultReadingTime }) =>
             defaultReadingTime({ content, options: { wordsPerMinute: 300 } }),
         },
         theme: {
-          customCss: "./src/css/custom.css",
+          customCss: './src/css/custom.css',
         },
       } satisfies Preset.Options,
     ],
@@ -73,7 +80,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: "img/docusaurus-social-card.jpg",
+    image: 'img/docusaurus-social-card.jpg',
     docs: {
       sidebar: {
         autoCollapseCategories: true,
@@ -81,26 +88,26 @@ const config: Config = {
       },
     },
     navbar: {
-      title: "Ken Handbook",
+      title: 'Ken Handbook',
       logo: {
-        alt: "ken-docs-logo",
-        src: "img/logo.png",
+        alt: 'ken-docs-logo',
+        src: 'img/logo.png',
       },
       items: [
         {
-          type: "docSidebar",
-          sidebarId: "tutorialSidebar",
-          label: "Docs",
+          type: 'docSidebar',
+          sidebarId: 'tutorialSidebar',
+          label: 'Docs',
         },
-        { to: "/blog", label: "Blog", position: "left" },
+        { to: '/blog', label: 'Blog', position: 'left' },
         {
-          href: "https://github.com/ttakennn/ken-docs",
-          label: "GitHub",
-          position: "right",
+          href: 'https://github.com/ttakennn/ken-docs',
+          label: 'GitHub',
+          position: 'right',
         },
         {
-          type: "docsVersionDropdown",
-          position: "right",
+          type: 'docsVersionDropdown',
+          position: 'right',
         },
         // { // @TODO: support  translation
         //   type: "localeDropdown",
@@ -109,44 +116,44 @@ const config: Config = {
       ],
     },
     footer: {
-      style: "dark",
+      style: 'dark',
       links: [
         {
-          title: "Docs",
+          title: 'Docs',
           items: [
             {
-              label: "Tutorial",
-              to: "/docs/intro",
+              label: 'Tutorial',
+              to: '/docs/intro',
             },
           ],
         },
         {
-          title: "Community",
+          title: 'Community',
           items: [
             {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
+              label: 'Stack Overflow',
+              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
             },
             {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
+              label: 'Discord',
+              href: 'https://discordapp.com/invite/docusaurus',
             },
             {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus",
+              label: 'Twitter',
+              href: 'https://twitter.com/docusaurus',
             },
           ],
         },
         {
-          title: "More",
+          title: 'More',
           items: [
             {
-              label: "Blog",
-              to: "/blog",
+              label: 'Blog',
+              to: '/blog',
             },
             {
-              label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              label: 'GitHub',
+              href: 'https://github.com/facebook/docusaurus',
             },
           ],
         },
@@ -159,12 +166,12 @@ const config: Config = {
     },
     algolia: {
       // The application ID provided by Algolia
-      appId: "PWJE2PU2ZR",
+      appId: 'PWJE2PU2ZR',
 
       // Public API key: it is safe to commit it
-      apiKey: "cbae34ef7712d167d7c550d8098eaf3e",
+      apiKey: 'cbae34ef7712d167d7c550d8098eaf3e',
 
-      indexName: "ken-vercel",
+      indexName: 'ken-vercel',
 
       // Optional: see doc section below
       contextualSearch: true,
