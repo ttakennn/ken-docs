@@ -3,7 +3,7 @@ description: Process in your project when using git
 id: git-process
 title: Git Process
 slug: /git-process
-sidebar_position: 1
+sidebar_position: 2
 tags: [Git]
 keywords:
   - rxjs

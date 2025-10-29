@@ -3,7 +3,7 @@ description: Useful commands in GIT
 id: git-useful-commands
 title: Git Useful Commands
 slug: /git-useful-commands
-sidebar_position: 2
+sidebar_position: 3
 tags: [Git]
 keywords:
   - rxjs
