@@ -1,0 +1,280 @@
+import Highlight from '@site/src/components/highlight/highlight.js';
+
+In TypeScript, Generic Types enable us to define a placeholder type for a variable we do not know enough yet to precise its type.
+
+. . .
+
+Generics can be used to define types for complex data structures.
+
+```ts
+interface Product<T> {
+  [key: string]: T;
+}
+
+const product: Product<number> = {
+  price: 1000,
+  qty: 5,
+  totalProduct: 50000,
+};
+```
+
+Generics can be used to create type-safe validation functions that can validate values of different types.
+```ts
+function checkNull<T>(value: T): value is NonNullable<T> {
+  return value === null;
+}
+
+console.log(checkNull("string")); // false
+console.log(checkNull(null)); // true
+```
+
+We transformed the getValue function to accept a generic type as its data input,
+and use this type’s keys as a type for the key argument using the keyof type operator
+```ts title="Generic to getValue"
+const getValue = <T extends Record<string, string>>(data: T, key: keyof T) => data[key];
+
+const user = {
+  firstname: "Text",
+  lastName: "User"
+};
+
+const firstname = getValue(user, "firstname");
+
+// Argument of type '"nonValue"' is not assignable to parameter of type '"firstname" | "lastName"'.ts(2345)
+const nonValue = getValue(user, "nonValue");
+```
+
+Let’s say that we’re building an application for a computer store, and for that matter,
+we’re using a class called ‘Product’ and 2 classes that inherit from it — ‘Keyboard’ and ‘Mouse’ that represents two items in the store.
+
+```ts title="Generic Computer Store"
+class Product {
+  id: number;
+  name: string;
+  price: number;
+
+  constructor(_id: number, _name: string, _price: number) {
+    this.id = _id;
+    this.name = _name;
+    this.price = _price;
+  }
+}
+
+class Keyboard extends Product {
+  constructor() {
+    super(2, "Keyboard", 60);
+  }
+}
+
+class Mouse extends Product {
+  constructor() {
+    super(3, "Mouse", 70);
+  }
+}
+
+const discountAmount = 0.8;
+const product = new Product(1, "Product", 50);
+const keyboard = new Keyboard();
+const mouse = new Mouse();
+
+
+// By extending the class Product, The ‘makeDiscount’ function is allowing Product
+// and all of its sub-classes to be usedas an argument and not allowing any other type to be passed.
+function makeDiscount<T extends Product>(product: T): T {
+  const itemPrice = product.price * discountAmount;
+
+  return {
+    ...product,
+    price: itemPrice,
+  };
+}
+
+console.log(makeDiscount(product)); // {id: 1, name: 'Product', price: 40}
+console.log(makeDiscount(keyboard)); // {id: 2, name: 'Keyboard', price: 48}
+console.log(makeDiscount(mouse)); // {id: 3, name: 'Mouse', price: 56}
+console.log(makeDiscount(book)); // Cannot find name 'book'.
+```
+
+**Using TypeScript Generics with Classes**
+
+TypeScript Generics can also be used with classes to create reusable classes that can work with different types.
+To use Generics with a class, you can define a type parameter inside angle brackets `<>` after the class name.
+This creates a placeholder for the data type the class will work with.
+```ts
+class List<T> {
+  private items: T[] = [];
+
+  add(item: T) {
+    this.items.push(item);
+  }
+
+  getItems(): T[] {
+    return this.items;
+  }
+}
+
+const numbers = new List<number>();
+numbers.add(1);
+numbers.add(2);
+numbers.add(3);
+console.log(numbers.getItems()); // [1, 2, 3]
+
+const strings = new List<string>();
+strings.add("MiSoo");
+strings.add("Azure");
+console.log(strings.getItems()); // ["MiSoo", "Azure"]
+```
+
+**Implementing Type Variables as Function Parameters**
+
+A more elegant way to solve the aforementioned problem would be to implement Type Variables (otherwise known as “Generics”).
+```ts
+function sayMessage<T>(message: T): string {
+  return "Simon says " + message;
+}
+
+console.log(sayMessage("hello")); // returns 'Simon says hello'
+console.log(sayMessage(1)); // returns 'Simon says 1'
+console.log(sayMessage(null)); // returns 'Simon says null'
+```
+
+One cool thing about using Generic Types is that the type of the parameter
+can also be used within the body of the function and even be returned:
+```ts
+const sayMessage = <T extends unknown>(message: T): [string, T] => [
+  `Simon says ${message}`,
+  message,
+];
+
+console.log(sayMessage("hello")); // returns [ 'Simon says hello', 'hello' ]
+```
+
+**Constraining the Types in a Generic**
+
+Our previous example of a generic parameter might be too broad and will allow the consumer of the function
+to call it sending in types such as undefined, null, or even an object. Let’s prevent that by using Generic Constraints.
+
+```ts
+enum messages {
+  greeting = "hello",
+  farewell = "bye",
+  love = "I love you",
+}
+
+const sayMessage = <M, T extends keyof M>(
+  messages: M,
+  message: T
+): [string, T] => [`Simon says ${messages[message]}`, message];
+
+console.log(sayMessage(messages, "greeting")); // ['Simon says hello', 'greeting']
+```
+
+Another neat way to use a Generic Type is by implementing Interfaces
+which is also another way you can constraint the scope of your type.
+
+```ts
+interface IMessage<M> {
+  message: M;
+  emotion: string;
+}
+
+const sayMessage = <T extends IMessage<string>>(message: T): [string, T] => [
+  `Simon says ${message.message}${message.emotion}`,
+  message,
+];
+
+// [ 'Simon says welcome!', { message: 'welcome', emotion: '!' } ]
+console.log(sayMessage({ message: "welcome", emotion: "!" }));
+```
+
+We have a generic function getOldest that finds the oldest animal from an array of animals.
+The generic type parameter T is constrained to Animal,
+which means that T must be a subtype of Animal and have the name and age properties defined.
+```ts
+interface Animal {
+  name: string;
+  age: number;
+}
+
+function getOldest<T extends Animal>(animals: T[]): T {
+  let oldest: T | null = null;
+
+  for (const animal of animals) {
+    if (oldest === null || animal.age > oldest.age) {
+      oldest = animal;
+    }
+  }
+
+  if (!oldest) {
+    throw new Error("No animals found");
+  }
+
+  return oldest;
+}
+
+const animals: Animal[] = [
+  { name: "Dog", age: 5 },
+  { name: "Cat", age: 7 },
+  { name: "Rabbit", age: 3 },
+];
+
+const oldestAnimal = getOldest(animals);
+console.log(oldestAnimal.name); // Output: "Cat"
+console.log(oldestAnimal.age); // Output: 7
+```
+
+**Using Generic to Extend Type**
+
+Generics can also be used to extend types.
+```ts
+interface User {
+  name: string;
+  passion: string;
+}
+
+interface Blog {
+  name: string;
+  genre: string;
+}
+
+type ResponseAPIType<T> = {
+  data: T;
+  isError: false;
+};
+
+const responseAPIUser: ResponseAPIType<User> = {
+  data: {
+    name: "Younus Raza",
+    passion: "Blogging, coding",
+  },
+  isError: false,
+};
+
+const responseAPIBlog: ResponseAPIType<Blog> = {
+  data: {
+    name: "Understanding Generics In Typescript.",
+    genre: "coding tech",
+  },
+  isError: false,
+};
+```
+
+**Conclusion**
+
+Generics are supported by many well-established programming languages,
+it only makes sense to implement them in TypeScript as well.
+
+One of the best use cases for Generics in TypeScript is to provide a type-safe variable for unknowns,
+such as retrieving API data sets or accepting user input. However, this is not the only use case:
+
+- Provide better readability of your code
+
+- Help you catch unsuspected scenarios with unknown variables
+
+- Let your IDE give you better IntelliSense suggestions
+
+- Assist TypeScript to properly consume otherwise non-type-safe data (API responses, user input, calculations, parsing a JSON file, etc.)
+
+- Keep you from assigning the ‘any type’ to unknown variables
+
+- Properly type your variable will also serve a pseudo documentation purpose, whereas you read the code and understand what the variables are used for
