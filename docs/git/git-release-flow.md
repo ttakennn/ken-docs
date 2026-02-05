@@ -16,198 +16,181 @@ last_update:
 
 :::info
 
-:sparkles: Duy trì luồng code 3 môi trường (`stg`, `uat`, `prod`) ổn định,  
-:sparkles: cho phép cherry-pick chọn lọc, tránh conflict khi merge về sau.
+**Release Flow (staging → uat → production)**
+
+Tài liệu này mô tả quy trình chuẩn để promote code giữa 3 môi trường:
+
+- **staging**: Dev/QA nội bộ  
+- **uat**: User Acceptance Testing  
+- **production**: Live environment  
 
 :::
 
 ---
 
-## 🧱 1. Cấu trúc nhánh
+Mục tiêu:
 
-| Môi trường           | Nhánh  | Vai trò                        |
-| -------------------- | ------ | ------------------------------ |
-| Staging              | `stg`  | Nhánh phát triển & test nội bộ |
-| User Acceptance Test | `uat`  | Test người dùng, QA            |
-| Production           | `prod` | Deploy chính thức              |
-
----
-
-## 🔁 2. Nguyên tắc chung
-
-- **stg → uat → prod** là luồng chính.
-- Mỗi môi trường chỉ cherry-pick **từ nhánh liền kề phía trước.**
-- Không cherry-pick “nhảy cấp” (ví dụ từ `stg` lên `prod` trực tiếp).
-- Sau mỗi đợt cherry-pick, **đánh dấu merge giả** bằng `-s ours` để tránh conflict về sau.
+✅ Promote đúng commit cần thiết  
+✅ Không conflict về sau  
+✅ Không dùng force-push trên protected branch  
+✅ Tránh merge sai kiểu `-s ours` gây “mất code”  
 
 ---
 
-## 🧩 3. Cherry-pick workflow
+## 1. Nguyên tắc quan trọng
 
-### 💡 Mục tiêu
+### ❌ Không dùng `git merge -X theirs` để replace toàn bộ code
+`-X theirs` chỉ chọn code của nhánh kia **khi có conflict**, không overwrite toàn bộ file.
 
-Lấy commit chọn lọc từ nhánh trước (source) sang nhánh sau (target).
+### ❌ Không reset rồi force-push lên protected branch
+Production thường bị GitLab chặn force-push.
+
+### ✅ Muốn environment A giống 100% environment B
+Phải dùng chiến thuật:
+
+1. Merge commit ghi nhận lịch sử (`-s ours`)
+2. Overwrite toàn bộ tree bằng `git checkout origin/<branch> -- .`
+3. Commit + push bình thường
 
 ---
 
-### 🔹 3.1. Từ `stg` → `uat`
+## 2. Promote một vài commit từ staging → uat
 
-**Bước 1.** Kiểm tra commit trên `stg`:
-
-```bash
-git checkout stg
-git log --oneline
-```
-
-**Bước 2.** Ghi lại commit cần cherry-pick (ví dụ: `abc123`, `def456`).
-
-**Bước 3.** Cherry-pick sang `uat`:
+### Khi chỉ muốn lấy commit #3, #4 (không merge full)
 
 ```bash
 git checkout uat
 git pull origin uat
-git cherry-pick abc123 def456
-# Nếu có conflict:
-# git add .
-# git cherry-pick --continue
+
+# lấy commit cụ thể
+git cherry-pick <commit-id-3>
+git cherry-pick <commit-id-4>
+
 git push origin uat
 ```
 
-**Bước 4.** Đánh dấu merge giả để Git ghi nhớ:
+📌 Sau này vẫn merge staging được bình thường vì history không bị phá.
+
+---
+
+## 3. Promote full staging → uat (đồng bộ hoàn toàn)
+
+### Bước chuẩn (overwrite tree)
 
 ```bash
-git merge -s ours origin/stg
+git fetch origin
+
+# 1. Đồng bộ local uat với remote
+git checkout uat
+git reset --hard origin/uat
+
+# 2. Ghi nhận merge staging → uat (tránh conflict sau này)
+git merge -s ours origin/staging -m "Record merge: staging -> uat"
+
+# 3. Overwrite toàn bộ source bằng staging
+git checkout origin/staging -- .
+
+# 4. Commit thay đổi
+git add -A
+git commit -m "Overwrite UAT with staging content"
+
+# 5. Push bình thường
 git push origin uat
 ```
 
 ---
 
-### 🔹 3.2. Từ `uat` → `prod`
+## 4. Promote uat → production (protected branch)
 
-**Bước 1.** Xác định commit từ `uat` cần đưa lên `prod`:
+### Production không được force-push, nên phải push commit bình thường
 
 ```bash
-git checkout uat
+git fetch origin
+
+# 1. Đồng bộ production với remote
+git checkout production
+git reset --hard origin/production
+
+# 2. Record merge history (không đổi code)
+git merge -s ours origin/uat -m "Record merge: uat -> production"
+
+# 3. Overwrite toàn bộ source production bằng uat
+git checkout origin/uat -- .
+
+# 4. Commit overwrite
+git add -A
+git commit -m "Overwrite production with UAT content"
+
+# 5. Push (không force)
+git push origin production
+```
+
+✅ Không conflict  
+✅ Không bị GitLab chặn  
+✅ Production giống UAT 100%
+
+---
+
+## 5. Giữ lại file riêng của từng môi trường
+
+Ví dụ: production có config riêng, README riêng…
+
+### Overwrite tất cả nhưng restore file cần giữ
+
+```bash
+git checkout origin/uat -- .
+git checkout origin/production -- README.md .env.production
+```
+
+Sau đó commit như bình thường.
+
+---
+
+## 6. Rollback nhanh nếu promote sai
+
+### Rollback production về commit trước đó
+
+```bash
+git checkout production
 git log --oneline
+
+git revert <bad-commit-id>
+git push origin production
 ```
 
-**Bước 2.** Cherry-pick sang `prod`:
+Hoặc reset local để xem lại:
 
 ```bash
-git checkout prod
-git pull origin prod
-git cherry-pick <commit-id-from-uat>
-git push origin prod
+git reset --hard origin/production
 ```
 
-**Bước 3.** Đánh dấu merge giả để tránh conflict về sau:
+---
+
+## 7. Quy tắc team bắt buộc
+
+- Không dùng `git merge -s ours` một mình (sẽ “merge mà không có code”)
+- Không reset + force-push production
+- Promote full env phải theo quy trình overwrite tree
+- Luôn backup branch trước khi overwrite lớn:
 
 ```bash
-git merge -s ours origin/uat
-git push origin prod
+git checkout -b production-backup origin/production
+git push origin production-backup
 ```
 
 ---
 
-## 🧠 4. Giải thích `-s ours`
+## 8. Summary nhanh
 
-- `git merge -s ours <branch>` giúp **Git ghi nhớ rằng nhánh hiện tại đã merge nhánh kia**,  
-  nhưng **giữ nguyên toàn bộ code của nhánh hiện tại**.
-- Khi sau này merge thật (`stg → uat` hoặc `uat → prod`), Git sẽ **không conflict** vì thấy “đã merge trước đó”.
-
----
-
-## 🧰 5. Rollback / Revert Merge Commit
-
-### Nếu merge commit chưa push:
-
-```bash
-git reset --hard HEAD~1
-```
-
-### Nếu merge commit đã push:
-
-```bash
-git revert -m 1 <merge_commit_id>
-git push origin <branch>
-```
+| Task | Cách đúng |
+|------|----------|
+| Lấy vài commit | cherry-pick |
+| Promote full env | merge -s ours + checkout overwrite + commit |
+| Protected branch | push commit bình thường, không force |
+| Giữ file riêng | restore file sau overwrite |
 
 ---
 
-## 📋 6. Kiểm tra lịch sử commit của 1 file
+📌 Document owner: Admin  
+📌 Last updated: 2026-02
 
-| Mục tiêu                      | Lệnh                       |
-| ----------------------------- | -------------------------- |
-| Xem commit nào ảnh hưởng file | `git log --oneline <file>` |
-| Xem chi tiết thay đổi         | `git log -p <file>`        |
-| Xem ai sửa dòng nào           | `git blame <file>`         |
-
----
-
-## 🚦 7. Checklist trước khi push
-
-| Bước | Hành động                                      | Ghi chú                                   |
-| ---- | ---------------------------------------------- | ----------------------------------------- |
-| 1    | Đảm bảo đang đúng nhánh (`stg`, `uat`, `prod`) | `git branch`                              |
-| 2    | Pull mới nhất từ remote                        | `git pull origin <branch>`                |
-| 3    | Cherry-pick commit cần thiết                   | `git cherry-pick <commit-id>`             |
-| 4    | Resolve conflict nếu có                        | `git add . && git cherry-pick --continue` |
-| 5    | Push lên remote                                | `git push origin <branch>`                |
-| 6    | Merge -s ours để tránh conflict                | `git merge -s ours origin/<source>`       |
-
----
-
-## 📦 8. Ví dụ thực tế
-
-Giả sử `stg` có 10 commits mới, bạn chỉ muốn lấy commit thứ 3 và 4 lên UAT:
-
-```bash
-# Từ STG → UAT
-git checkout stg
-git log --oneline  # ghi lại commitId: a1b2c3, b2c3d4
-
-git checkout uat
-git pull origin uat
-git cherry-pick a1b2c3 b2c3d4
-git push origin uat
-
-# Đánh dấu merge giả
-git merge -s ours origin/stg
-git push origin uat
-```
-
-Sau khi UAT test xong, muốn đưa lên PROD:
-
-```bash
-git checkout prod
-git pull origin prod
-git cherry-pick a1b2c3 b2c3d4  # hoặc lấy commitId tương ứng từ UAT
-git push origin prod
-
-git merge -s ours origin/uat
-git push origin prod
-```
-
----
-
-## 🧭 9. Quy tắc tổng quát cherry-pick theo môi trường
-
-| Nguồn           | Đích      | Cherry-pick từ đâu          | Ghi chú |
-| --------------- | --------- | --------------------------- | ------- |
-| STG → UAT       | `stg`     | Lấy commit từ `stg`         |
-| UAT → PROD      | `uat`     | Lấy commit từ `uat`         |
-| Sau cherry-pick | `-s ours` | Merge giả để tránh conflict |
-
----
-
-## 📚 10. Tips hữu ích
-
-- Luôn **pull mới nhất** trước khi cherry-pick.
-- Khi cherry-pick nhiều commit liên tiếp:
-  ```bash
-  git cherry-pick A..B  # từ commit A đến B
-  ```
-- Dùng `git log --graph --oneline --decorate` để xem luồng branch trực quan.
-- Dùng extension **GitLens** trong VSCode để xem lịch sử dễ hơn.
-
----
